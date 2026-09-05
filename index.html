@@ -139,6 +139,8 @@
   }
   .hero .row .item .k{font-size:11px;color:var(--ink-faint);margin-bottom:2px;}
   .hero .row .item .v{font-family:var(--font-display);font-size:16px;font-weight:600;}
+  .hero .row .item.cash .v{color:var(--paper);}
+  body.dark-mode .hero .row .item.cash .v{color:#FFFFFF;}
   .hero .row .item.in .v{color:#8FD8BE;}
   body.dark-mode .hero .row .item.in .v{color:#43C39E;}
   .hero .row .item.out .v{color:#E6A08F;}
@@ -264,13 +266,13 @@
     background:var(--ink);
     color:var(--paper);
     border:none;
-    padding:4px 10px;
+    padding:5px 12px;
     border-radius:8px;
-    font-size:11px;
-    font-weight:600;
+    font-size:11.5px;
+    font-weight:700;
     cursor:pointer;
   }
-  body.dark-mode .debt-card-row .settle-btn{background:var(--gold); color:#000;}
+  body.dark-mode .debt-card-row .settle-btn{background:var(--gold); color:#111A23;}
 
   .empty{
     text-align:center;
@@ -365,7 +367,17 @@
   body.dark-mode .btn.primary{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
   .btn.primary:active{opacity:.85;}
   .btn.ghost{background:transparent; color:var(--ink-soft); margin-top:8px;}
-  .btn.small{padding:10px 14px; font-size:13px; width:auto; border-radius:10px;}
+  .btn.small{padding:8px 12px; font-size:12.5px; width:auto; border-radius:10px;}
+  .btn.outline{
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink);
+  }
+  body.dark-mode .btn.outline{
+    border-color:var(--line);
+    background:var(--paper-raised);
+    color:var(--ink);
+  }
   .err-msg{
     background:var(--rust-soft); color:var(--rust);
     border-radius:10px; padding:10px 12px; font-size:12.5px;
@@ -808,7 +820,7 @@ let state = {
   sources: DB.get('sources', DEFAULT_SOURCES.slice()),
   accounts: DB.get('accounts', DEFAULT_ACCOUNTS.slice()),
   recurring: DB.get('recurring', []),
-  debts: DB.get('debts', []) // Accounts Receivable & Accounts Payable records
+  debts: DB.get('debts', [])
 };
 
 function persist(triggerSync){
@@ -848,8 +860,8 @@ function totals(){
 }
 
 function debtTotals(){
-  let receivable = 0; // Paona (Lent to others)
-  let payable = 0;    // Dena (Borrowed from others)
+  let receivable = 0;
+  let payable = 0;
 
   state.debts.forEach(d=>{
     if(!d.settled){
@@ -864,7 +876,6 @@ function accountBalances(){
   const bal = {};
   state.accounts.forEach(a=> bal[a]=0);
   
-  // Transactions
   state.transactions.forEach(t=>{
     if(t.type==='income'){ bal[t.account] = (bal[t.account]||0) + t.amount; }
     else if(t.type==='expense'){ bal[t.account] = (bal[t.account]||0) - t.amount; }
@@ -873,19 +884,15 @@ function accountBalances(){
       bal[t.to] = (bal[t.to]||0) + t.amount;
     }
     else if(t.type==='lend'){
-      // Cash goes out as an asset receivable
       bal[t.account] = (bal[t.account]||0) - t.amount;
     }
     else if(t.type==='borrow'){
-      // Cash comes in as a liability payable
       bal[t.account] = (bal[t.account]||0) + t.amount;
     }
     else if(t.type==='settle_lend'){
-      // Cash collected back from debtor
       bal[t.account] = (bal[t.account]||0) + t.amount;
     }
     else if(t.type==='settle_borrow'){
-      // Cash paid back to creditor
       bal[t.account] = (bal[t.account]||0) - t.amount;
     }
   });
@@ -935,7 +942,7 @@ function renderHome(){
   const D = debtTotals();
   const accBal = accountBalances();
   const totalCash = Object.values(accBal).reduce((a,b)=>a+b,0);
-  const netWorth = totalCash + D.netReceivable; // True Net Worth: Cash + Paona - Dena
+  const netWorth = totalCash + D.netReceivable;
 
   const recent = sortedTransactions().slice(0,6);
   const dueRecurring = state.recurring;
@@ -945,13 +952,12 @@ function renderHome(){
     <div class="label">Net Worth (Cash + Paona − Dena)</div>
     <div class="balance tabular">${fmt(netWorth)}</div>
     <div class="row">
-      <div class="item"><div class="k">Available Cash</div><div class="v tabular">${fmt(totalCash)}</div></div>
+      <div class="item cash"><div class="k">Available Cash</div><div class="v tabular">${fmt(totalCash)}</div></div>
       <div class="item in"><div class="k">Income</div><div class="v tabular">${fmt(T.income)}</div></div>
       <div class="item out"><div class="k">Expense</div><div class="v tabular">${fmt(T.expense)}</div></div>
     </div>
   </div>
 
-  <!-- Accounts Receivable & Payable Badges -->
   <div class="debt-summary-row">
     <div class="debt-pill ar" onclick="openDebtList('receivable')">
       <div class="label"><span>📥</span> Receivable (Paona)</div>
@@ -1080,8 +1086,7 @@ function renderAccounts(){
   html += `<div class="acc-total"><span class="name">Total Available Cash</span><span class="bal tabular">${fmt(total)}</span></div>`;
   html += `</div>`;
 
-  // Accounts Receivable & Payable section
-  html += `<div class="sec-head" style="margin-top:26px;"><h3>Accounts Receivable (Paona)</h3><button class="btn small" style="border:1px solid var(--line); background:var(--paper-raised);" onclick="openAdd('lend')">+ Lend</button></div>`;
+  html += `<div class="sec-head" style="margin-top:26px;"><h3>Accounts Receivable (Paona)</h3><button class="btn small outline" onclick="openAdd('lend')">+ Lend</button></div>`;
   const arList = state.debts.filter(d => d.type === 'lend' && !d.settled);
   if(arList.length === 0){
     html += emptyState('No pending receivables', 'Nobody owes you money right now.');
@@ -1102,7 +1107,7 @@ function renderAccounts(){
     });
   }
 
-  html += `<div class="sec-head" style="margin-top:26px;"><h3>Accounts Payable (Dena)</h3><button class="btn small" style="border:1px solid var(--line); background:var(--paper-raised);" onclick="openAdd('borrow')">+ Borrow</button></div>`;
+  html += `<div class="sec-head" style="margin-top:26px;"><h3>Accounts Payable (Dena)</h3><button class="btn small outline" onclick="openAdd('borrow')">+ Borrow</button></div>`;
   const apList = state.debts.filter(d => d.type === 'borrow' && !d.settled);
   if(apList.length === 0){
     html += emptyState('No pending payables', 'You do not owe money to anyone.');
@@ -1139,7 +1144,6 @@ function settleDebt(debtId){
   d.settled = true;
   d.settledDate = todayISO();
 
-  // Create settlement transaction to correctly balance cash book
   state.transactions.push({
     id: uid(),
     type: d.type === 'lend' ? 'settle_lend' : 'settle_borrow',
@@ -1193,7 +1197,6 @@ function tabBtn(val,label){
 }
 function setPeriod(p){ state.reportPeriod = p; render(); }
 
-/* Accordion toggling */
 function toggleAccordion(id){
   const el = document.getElementById(id);
   if(el){
@@ -1467,20 +1470,20 @@ function renderSheet(){
     `;
   } else if(addType==='lend'){
     fields = `
-      <label class="field"><span class="fl">Lent Amount (Receivable)</span>
+      <label class="field"><span class="fl">Lend Amount (Receivable)</span>
         <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
       </label>
-      <label class="field"><span class="fl">Who owes you? (Person name)</span><input id="fPerson" placeholder="e.g. Shakil"></label>
+      <label class="field"><span class="fl">Who owes you? (Person, Store, or Entity)</span><input id="fPerson" placeholder="e.g. Shakil"></label>
       <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
       <label class="field"><span class="fl">Paid from Account</span><select id="fAccount">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Lunch bill dhar nilo"></label>
     `;
   } else if(addType==='borrow'){
     fields = `
-      <label class="field"><span class="fl">Borrowed Amount (Payable)</span>
+      <label class="field"><span class="fl">Borrow Amount (Payable)</span>
         <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
       </label>
-      <label class="field"><span class="fl">Who did you borrow from? (Person name)</span><input id="fPerson" placeholder="e.g. Tanvir"></label>
+      <label class="field"><span class="fl">Who did you borrow from? (Person, Bank, or Entity)</span><input id="fPerson" placeholder="e.g. Tanvir"></label>
       <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
       <label class="field"><span class="fl">Received into Account</span><select id="fAccount">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Hostel rent dhar"></label>
@@ -1543,11 +1546,10 @@ function saveTransaction(){
     const person = document.getElementById('fPerson').value.trim();
     const account = document.getElementById('fAccount').value;
     if(!person){
-      showErr('Please enter the person\'s name.');
+      showErr('Please enter the name of the person, store, or entity.');
       return;
     }
     const debtId = uid();
-    // Add to active debts
     state.debts.push({
       id: debtId,
       type: addType,
@@ -1558,7 +1560,6 @@ function saveTransaction(){
       note,
       settled: false
     });
-    // Add transaction
     state.transactions.push({
       id: uid(),
       type: addType,
