@@ -1044,15 +1044,63 @@ function toggleTxMenu(e, id){
 
   const menu = document.createElement('div');
   menu.id = 'txMenuPopup';
-  menu.style.cssText = 'position:absolute; right:0; top:30px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:50; overflow:hidden; min-width:100px;';
+  menu.style.cssText = 'position:absolute; right:0; top:30px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:50; overflow:hidden; min-width:105px;';
   menu.innerHTML = `
+    <div onclick="editTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; border-bottom:1px solid var(--line); color:var(--ink);">Edit</div>
     <div onclick="deleteTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; color:var(--rust); cursor:pointer;">Delete</div>
   `;
   e.currentTarget.parentNode.appendChild(menu);
   document.addEventListener('click', () => menu.remove(), {once:true});
 }
 
+function editTransaction(id){
+  const t = state.transactions.find(x => x.id === id);
+  if(!t) return;
+
+  // Settle transactions cannot be edited directly; they represent history
+  if(t.type === 'settle_lend' || t.type === 'settle_borrow'){
+    alert('Settlement history entries cannot be edited. You can delete it or add a new transaction.');
+    return;
+  }
+
+  // Open corresponding sheet
+  openAdd(t.type);
+
+  // Pre-fill fields
+  if(document.getElementById('fAmount')) document.getElementById('fAmount').value = t.amount;
+  if(document.getElementById('fDate')) document.getElementById('fDate').value = t.date;
+  if(document.getElementById('fNote') && t.note) document.getElementById('fNote').value = t.note;
+
+  if(t.type === 'income' && document.getElementById('fSource')) document.getElementById('fSource').value = t.source;
+  if(t.type === 'expense' && document.getElementById('fCategory')) document.getElementById('fCategory').value = t.category;
+  if(t.type === 'transfer'){
+    if(document.getElementById('fFrom')) document.getElementById('fFrom').value = t.from;
+    if(document.getElementById('fTo')) document.getElementById('fTo').value = t.to;
+  }
+  if((t.type === 'lend' || t.type === 'borrow')){
+    if(document.getElementById('fPerson')) document.getElementById('fPerson').value = t.person;
+    if(document.getElementById('fAccount')) document.getElementById('fAccount').value = t.account;
+  } else if(document.getElementById('fAccount')){
+    document.getElementById('fAccount').value = t.account;
+  }
+
+  // If editing an existing lend/borrow, sync/remove the original debt entry
+  if(t.debtId){
+    state.debts = state.debts.filter(d => d.id !== t.debtId);
+  }
+
+  // Remove original transaction record so saving will create the updated one
+  state.transactions = state.transactions.filter(x => x.id !== id);
+  persist();
+  render();
+}
+
 function deleteTransaction(id){
+  const t = state.transactions.find(x => x.id === id);
+  if(t && t.debtId){
+    // If original lend/borrow transaction is deleted, remove corresponding debt tracker
+    state.debts = state.debts.filter(d => d.id !== t.debtId);
+  }
   state.transactions = state.transactions.filter(t => t.id !== id);
   persist();
   render();
@@ -1077,7 +1125,6 @@ function renderHistory(){
 function renderAccounts(){
   const bal = accountBalances();
   const total = Object.values(bal).reduce((a,b)=>a+b,0);
-  const D = debtTotals();
 
   let html = `<div class="sec-head" style="margin-top:22px;"><h3>Cash & Payment Accounts</h3></div><div class="acc-grid">`;
   state.accounts.forEach(a=>{
