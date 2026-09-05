@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Khata">
 <title>Khata — your money, plainly kept</title>
+  <link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231C2B39'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23C99A3D' font-family='Georgia,serif'%3E৳%3C/text%3E%3C/svg%3E">
@@ -349,41 +350,50 @@
   .bar-track{height:8px; background:var(--line); border-radius:6px; overflow:hidden;}
   .bar-fill{height:100%; background:var(--rust); border-radius:6px;}
 
-  nav.bottom{
-    position:absolute; left:0; right:0; bottom:0;
-    background:var(--paper-raised);
-    border-top:1px solid var(--line);
-    display:flex;
-    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-    z-index:20;
-  }
-  nav.bottom button{
-    flex:1;
-    background:none; border:none;
-    display:flex; flex-direction:column; align-items:center; gap:4px;
-    padding:6px 2px;
-    color:var(--ink-faint);
-    cursor:pointer;
-    font-family:var(--font-ui);
-  }
-  nav.bottom button.active{color:var(--ink);}
-  nav.bottom button svg{width:21px; height:21px;}
-  nav.bottom button span{font-size:10px; font-weight:600;}
+nav.bottom{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:460px;
+  background:var(--paper-raised);
+  border-top:1px solid var(--line);
+  display:flex;
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  z-index:90;
+}
+nav.bottom button{
+  flex:1;
+  background:none; border:none;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:6px 2px;
+  color:var(--ink-faint);
+  cursor:pointer;
+  font-family:var(--font-ui);
+}
+nav.bottom button.active{color:var(--ink);}
+nav.bottom button svg{width:21px; height:21px;}
+nav.bottom button span{font-size:10px; font-weight:600;}
 
-  .fab{
-    position:absolute;
-    right:20px; bottom:76px;
-    width:56px; height:56px;
-    border-radius:50%;
-    background:var(--gold);
-    color:#fff;
-    border:none;
-    font-size:28px;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 20px rgba(192,138,46,.45);
-    cursor:pointer;
-    z-index:19;
-  }
+.fab{
+  position:fixed;
+  right:max(20px, calc(50% - 210px));
+  bottom:calc(75px + env(safe-area-inset-bottom));
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:var(--gold);
+  color:#fff;
+  border:none;
+  font-size:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 20px rgba(192,138,46,.45);
+  cursor:pointer;
+  z-index:95;
+}
   .fab:active{transform:scale(.94);}
 
   .sheet-overlay{
