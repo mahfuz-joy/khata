@@ -28,6 +28,10 @@
     --gold:#C08A2E;
     --gold-soft:#F6EEDD;
     --line:#E6DFCF;
+    --blue:#2B6CB0;
+    --blue-soft:#EBF8FF;
+    --purple:#6B46C1;
+    --purple-soft:#FAF5FF;
     --radius-card:18px;
     --radius-sheet:22px;
     --font-display:'Fraunces',serif;
@@ -45,6 +49,10 @@
     --rust-soft:#3C1F1A;
     --gold:#F5B742;
     --gold-soft:#3D2F14;
+    --blue:#63B3ED;
+    --blue-soft:#1A365D;
+    --purple:#B794F4;
+    --purple-soft:#322659;
     --line:#263546;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -102,7 +110,7 @@
     background:var(--ink);
     color:var(--paper);
     border-radius:var(--radius-card);
-    padding:24px 22px;
+    padding:22px;
     margin-bottom:18px;
   }
   body.dark-mode .hero{
@@ -116,7 +124,7 @@
   }
   .hero .balance{
     font-family:var(--font-display);
-    font-size:40px;
+    font-size:36px;
     font-weight:600;
     line-height:1.1;
     margin-bottom:16px;
@@ -125,38 +133,68 @@
   body.dark-mode .hero .balance{color:#FFFFFF; text-shadow:0 2px 10px rgba(0,0,0,.3);}
   .hero .row{
     display:flex;
-    gap:22px;
+    justify-content:space-between;
     border-top:1px solid rgba(255,255,255,.14);
-    padding-top:14px;
+    padding-top:12px;
   }
   .hero .row .item .k{font-size:11px;color:var(--ink-faint);margin-bottom:2px;}
-  .hero .row .item .v{font-family:var(--font-display);font-size:17px;font-weight:600;}
+  .hero .row .item .v{font-family:var(--font-display);font-size:16px;font-weight:600;}
   .hero .row .item.in .v{color:#8FD8BE;}
   body.dark-mode .hero .row .item.in .v{color:#43C39E;}
   .hero .row .item.out .v{color:#E6A08F;}
   body.dark-mode .hero .row .item.out .v{color:#FF8A75;}
 
+  /* AR & AP Summary Badge in Home */
+  .debt-summary-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .debt-pill{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    cursor:pointer;
+  }
+  .debt-pill .label{font-size:11px; font-weight:600; color:var(--ink-faint); display:flex; align-items:center; gap:5px;}
+  .debt-pill .val{font-family:var(--font-display); font-size:16px; font-weight:700;}
+  .debt-pill.ar .val{color:var(--teal);}
+  .debt-pill.ap .val{color:var(--rust);}
+
   .quick{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:10px;
+    margin-bottom:12px;
+  }
+  .quick-extra{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
     margin-bottom:22px;
   }
-  .quick button{
+  .quick button, .quick-extra button{
     font-family:var(--font-ui);
     font-size:13px;
     font-weight:600;
-    padding:12px 6px;
+    padding:11px 6px;
     border-radius:12px;
     border:1px solid var(--line);
     background:var(--paper-raised);
     color:var(--ink);
     cursor:pointer;
   }
-  .quick button:active{transform:scale(.97);}
+  .quick button:active, .quick-extra button:active{transform:scale(.97);}
   .quick button.income{color:var(--teal);}
   .quick button.expense{color:var(--rust);}
   .quick button.transfer{color:var(--gold);}
+  .quick-extra button.lend{color:var(--blue); border-color:rgba(43,108,176,0.3);}
+  .quick-extra button.borrow{color:var(--purple); border-color:rgba(107,70,193,0.3);}
 
   .sec-head{
     display:flex;
@@ -194,6 +232,8 @@
   }
   .tx.expense .dot{background:var(--rust-soft); color:var(--rust);}
   .tx.transfer .dot{background:var(--gold-soft); color:var(--gold);}
+  .tx.lend .dot{background:var(--blue-soft); color:var(--blue);}
+  .tx.borrow .dot{background:var(--purple-soft); color:var(--purple);}
   .tx .mid{flex:1; min-width:0;}
   .tx .mid .t1{font-size:14.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .tx .mid .t2{font-size:12px; color:var(--ink-faint); margin-top:1px;}
@@ -201,6 +241,36 @@
   .tx.income .amt{color:var(--teal);}
   .tx.expense .amt{color:var(--rust);}
   .tx.transfer .amt{color:var(--gold);}
+  .tx.lend .amt{color:var(--blue);}
+  .tx.borrow .amt{color:var(--purple);}
+
+  .debt-card-row{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .debt-card-row.settled{opacity:0.6;}
+  .debt-card-row .p-name{font-weight:700; font-size:14.5px; margin-bottom:2px;}
+  .debt-card-row .p-sub{font-size:11.5px; color:var(--ink-faint);}
+  .debt-card-row .right-side{text-align:right;}
+  .debt-card-row .p-amt{font-family:var(--font-display); font-weight:700; font-size:16px;}
+  .debt-card-row .settle-btn{
+    margin-top:4px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:4px 10px;
+    border-radius:8px;
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  body.dark-mode .debt-card-row .settle-btn{background:var(--gold); color:#000;}
 
   .empty{
     text-align:center;
@@ -209,17 +279,6 @@
     font-size:13px;
   }
   .empty .big{font-family:var(--font-display); font-size:15px; color:var(--ink-soft); margin-bottom:4px;}
-
-  .reminder{
-    background:var(--gold-soft);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:12px 14px;
-    margin-bottom:18px;
-    font-size:13px;
-  }
-  .reminder .h{font-weight:700; color:var(--gold); margin-bottom:6px; font-size:12.5px;}
-  .reminder .line{display:flex; justify-content:space-between; padding:3px 0; color:var(--ink-soft);}
 
   .acc-grid{display:flex; flex-direction:column; gap:10px; margin-bottom:10px;}
   .acc-card{
@@ -272,18 +331,20 @@
     border-radius:12px;
     padding:3px;
     margin-bottom:20px;
+    overflow-x:auto;
   }
   .segmented button{
     flex:1;
     border:none;
     background:transparent;
-    padding:10px 4px;
+    padding:9px 4px;
     font-family:var(--font-ui);
     font-weight:600;
-    font-size:13px;
+    font-size:12px;
     color:var(--ink-soft);
     border-radius:9px;
     cursor:pointer;
+    white-space:nowrap;
   }
   .segmented button.active{background:var(--ink); color:var(--paper);}
   body.dark-mode .segmented button.active{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
@@ -329,7 +390,7 @@
   .manage-row .t2{font-size:12px; color:var(--ink-faint);}
   .manage-row .x{color:var(--rust); font-size:13px; font-weight:600; cursor:pointer;}
 
-  /* Collapsible Accordions for Clean Settings Screen */
+  /* Collapsible Accordions */
   .accordion-box{
     background:var(--paper-raised);
     border:1px solid var(--line);
@@ -452,7 +513,7 @@
     background:var(--paper);
     border-radius:var(--radius-sheet) var(--radius-sheet) 0 0;
     padding:20px 20px calc(24px + env(safe-area-inset-bottom));
-    max-height:88%;
+    max-height:90%;
     overflow-y:auto;
     transition:transform .28s cubic-bezier(.2,.8,.2,1);
     z-index:97;
@@ -461,7 +522,7 @@
   .sheet .handle{width:38px; height:4px; background:var(--line); border-radius:3px; margin:0 auto 16px;}
   .sheet h2{font-family:var(--font-display); font-size:19px; margin:0 0 18px;}
 
-  /* Developer modal overlay: completely fixed in screen center */
+  /* Developer modal overlay: fixed in screen center */
   .dev-modal{
     position:fixed !important;
     top:0; left:0; right:0; bottom:0;
@@ -557,7 +618,7 @@
   </div>
 </div>
 
-<!-- Developer Modal outside app-shell -->
+<!-- Developer Modal -->
 <div class="dev-modal" id="devModal">
   <div class="dev-card">
     <div class="dev-avatar">
@@ -656,7 +717,8 @@ async function driveBackupNow(){
     const file = await driveFindFile();
     const payload = JSON.stringify({
       transactions: state.transactions, categories: state.categories,
-      sources: state.sources, accounts: state.accounts, recurring: state.recurring
+      sources: state.sources, accounts: state.accounts, recurring: state.recurring,
+      debts: state.debts
     });
     const metadata = {name: DRIVE_FILENAME, mimeType:'application/json'};
     if(!file) metadata.parents = ['appDataFolder'];
@@ -700,6 +762,7 @@ async function driveRestoreNow(){
     state.sources = data.sources || DEFAULT_SOURCES.slice();
     state.accounts = data.accounts || DEFAULT_ACCOUNTS.slice();
     state.recurring = data.recurring || [];
+    state.debts = data.debts || [];
     persist(false);
     setSyncMsg('Restored ✓');
     render();
@@ -744,7 +807,8 @@ let state = {
   categories: DB.get('categories', DEFAULT_CATEGORIES.slice()),
   sources: DB.get('sources', DEFAULT_SOURCES.slice()),
   accounts: DB.get('accounts', DEFAULT_ACCOUNTS.slice()),
-  recurring: DB.get('recurring', [])
+  recurring: DB.get('recurring', []),
+  debts: DB.get('debts', []) // Accounts Receivable & Accounts Payable records
 };
 
 function persist(triggerSync){
@@ -753,6 +817,7 @@ function persist(triggerSync){
   DB.set('sources', state.sources);
   DB.set('accounts', state.accounts);
   DB.set('recurring', state.recurring);
+  DB.set('debts', state.debts);
   if(triggerSync !== false && driveAutoSync && driveAccessToken){
     driveBackupNow();
   }
@@ -767,6 +832,7 @@ function fmt(n){
 }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 function fmtDate(iso){
+  if(!iso) return '';
   const d = new Date(iso+'T00:00:00');
   return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
 }
@@ -780,9 +846,25 @@ function totals(){
   });
   return {income, expense, balance: income-expense};
 }
+
+function debtTotals(){
+  let receivable = 0; // Paona (Lent to others)
+  let payable = 0;    // Dena (Borrowed from others)
+
+  state.debts.forEach(d=>{
+    if(!d.settled){
+      if(d.type === 'lend') receivable += d.amount;
+      else if(d.type === 'borrow') payable += d.amount;
+    }
+  });
+  return {receivable, payable, netReceivable: receivable - payable};
+}
+
 function accountBalances(){
   const bal = {};
   state.accounts.forEach(a=> bal[a]=0);
+  
+  // Transactions
   state.transactions.forEach(t=>{
     if(t.type==='income'){ bal[t.account] = (bal[t.account]||0) + t.amount; }
     else if(t.type==='expense'){ bal[t.account] = (bal[t.account]||0) - t.amount; }
@@ -790,9 +872,26 @@ function accountBalances(){
       bal[t.from] = (bal[t.from]||0) - t.amount;
       bal[t.to] = (bal[t.to]||0) + t.amount;
     }
+    else if(t.type==='lend'){
+      // Cash goes out as an asset receivable
+      bal[t.account] = (bal[t.account]||0) - t.amount;
+    }
+    else if(t.type==='borrow'){
+      // Cash comes in as a liability payable
+      bal[t.account] = (bal[t.account]||0) + t.amount;
+    }
+    else if(t.type==='settle_lend'){
+      // Cash collected back from debtor
+      bal[t.account] = (bal[t.account]||0) + t.amount;
+    }
+    else if(t.type==='settle_borrow'){
+      // Cash paid back to creditor
+      bal[t.account] = (bal[t.account]||0) - t.amount;
+    }
   });
   return bal;
 }
+
 function inRange(iso, period){
   const d = new Date(iso+'T00:00:00');
   const now = new Date();
@@ -808,6 +907,7 @@ function inRange(iso, period){
   }
   return true;
 }
+
 function reportData(period){
   let income=0, expense=0;
   const catMap = {};
@@ -823,7 +923,6 @@ function reportData(period){
   return {income, expense, remaining: income-expense, cats};
 }
 
-/* Sorts transactions primarily by date, then by submission timestamp */
 function sortedTransactions(){
   return state.transactions.slice().sort((a,b)=>{
     if(b.date !== a.date) return b.date.localeCompare(a.date);
@@ -833,16 +932,34 @@ function sortedTransactions(){
 
 function renderHome(){
   const T = totals();
+  const D = debtTotals();
+  const accBal = accountBalances();
+  const totalCash = Object.values(accBal).reduce((a,b)=>a+b,0);
+  const netWorth = totalCash + D.netReceivable; // True Net Worth: Cash + Paona - Dena
+
   const recent = sortedTransactions().slice(0,6);
   const dueRecurring = state.recurring;
 
   let html = `
   <div class="hero">
-    <div class="label">Total balance</div>
-    <div class="balance tabular">${fmt(T.balance)}</div>
+    <div class="label">Net Worth (Cash + Paona − Dena)</div>
+    <div class="balance tabular">${fmt(netWorth)}</div>
     <div class="row">
+      <div class="item"><div class="k">Available Cash</div><div class="v tabular">${fmt(totalCash)}</div></div>
       <div class="item in"><div class="k">Income</div><div class="v tabular">${fmt(T.income)}</div></div>
       <div class="item out"><div class="k">Expense</div><div class="v tabular">${fmt(T.expense)}</div></div>
+    </div>
+  </div>
+
+  <!-- Accounts Receivable & Payable Badges -->
+  <div class="debt-summary-row">
+    <div class="debt-pill ar" onclick="openDebtList('receivable')">
+      <div class="label"><span>📥</span> Receivable (Paona)</div>
+      <div class="val tabular">${fmt(D.receivable)}</div>
+    </div>
+    <div class="debt-pill ap" onclick="openDebtList('payable')">
+      <div class="label"><span>📤</span> Payable (Dena)</div>
+      <div class="val tabular">${fmt(D.payable)}</div>
     </div>
   </div>
 
@@ -850,6 +967,10 @@ function renderHome(){
     <button class="income" onclick="openAdd('income')">+ Income</button>
     <button class="expense" onclick="openAdd('expense')">− Expense</button>
     <button class="transfer" onclick="openAdd('transfer')">⇄ Transfer</button>
+  </div>
+  <div class="quick-extra">
+    <button class="lend" onclick="openAdd('lend')">🤝 Lend (Dhaar Dilam)</button>
+    <button class="borrow" onclick="openAdd('borrow')">🤲 Borrow (Dhaar Nilam)</button>
   </div>`;
 
   if(dueRecurring.length){
@@ -863,7 +984,7 @@ function renderHome(){
   html += `<div class="sec-head"><h3>Recent activity</h3><a onclick="goTab('history')">See all</a></div>`;
 
   if(recent.length===0){
-    html += emptyState('Nothing here yet', 'Add your first income or expense to start your ledger.');
+    html += emptyState('Nothing here yet', 'Add your first transaction to start your ledger.');
   } else {
     html += `<div class="tx-list">` + recent.map(txRow).join('') + `</div>`;
   }
@@ -875,10 +996,28 @@ function emptyState(big, small){
 }
 
 function txRow(t){
-  const icon = t.type==='income' ? '↓' : t.type==='expense' ? '↑' : '⇄';
-  const title = t.type==='transfer' ? `${t.from} → ${t.to}` : (t.type==='income' ? t.source : t.category);
-  const sign = t.type==='income' ? '+' : t.type==='expense' ? '−' : '';
-  const sub = t.type==='transfer' ? fmtDate(t.date) : `${t.account} · ${fmtDate(t.date)}` + (t.note? ' · '+escapeHtml(t.note): '');
+  let icon = '↓';
+  let title = '';
+  let sign = '';
+  let sub = `${t.account || ''} · ${fmtDate(t.date)}` + (t.note? ' · '+escapeHtml(t.note): '');
+
+  if(t.type === 'income'){
+    icon = '↓'; title = t.source || 'Income'; sign = '+';
+  } else if(t.type === 'expense'){
+    icon = '↑'; title = t.category || 'Expense'; sign = '−';
+  } else if(t.type === 'transfer'){
+    icon = '⇄'; title = `${t.from} → ${t.to}`; sign = '';
+    sub = fmtDate(t.date);
+  } else if(t.type === 'lend'){
+    icon = '🤝'; title = `Lent to ${t.person}`; sign = '−';
+  } else if(t.type === 'borrow'){
+    icon = '🤲'; title = `Borrowed from ${t.person}`; sign = '+';
+  } else if(t.type === 'settle_lend'){
+    icon = '✓'; title = `Received back from ${t.person}`; sign = '+';
+  } else if(t.type === 'settle_borrow'){
+    icon = '✓'; title = `Paid back to ${t.person}`; sign = '−';
+  }
+
   return `<div class="tx ${t.type}">
     <div class="dot">${icon}</div>
     <div class="mid">
@@ -901,28 +1040,14 @@ function toggleTxMenu(e, id){
   menu.id = 'txMenuPopup';
   menu.style.cssText = 'position:absolute; right:0; top:30px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:50; overflow:hidden; min-width:100px;';
   menu.innerHTML = `
-    <div onclick="editTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; border-bottom:1px solid var(--line); color:var(--ink);">Edit</div>
     <div onclick="deleteTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; color:var(--rust); cursor:pointer;">Delete</div>
   `;
   e.currentTarget.parentNode.appendChild(menu);
-
   document.addEventListener('click', () => menu.remove(), {once:true});
 }
 
 function deleteTransaction(id){
   state.transactions = state.transactions.filter(t => t.id !== id);
-  persist();
-  render();
-}
-
-function editTransaction(id){
-  const t = state.transactions.find(x => x.id === id);
-  if(!t) return;
-  openAdd(t.type);
-  document.getElementById('fAmount').value = t.amount;
-  if(document.getElementById('fDate')) document.getElementById('fDate').value = t.date;
-  if(t.note) document.getElementById('fNote').value = t.note;
-  state.transactions = state.transactions.filter(x => x.id !== id);
   persist();
   render();
 }
@@ -946,13 +1071,92 @@ function renderHistory(){
 function renderAccounts(){
   const bal = accountBalances();
   const total = Object.values(bal).reduce((a,b)=>a+b,0);
-  let html = `<div class="sec-head" style="margin-top:22px;"><h3>Your accounts</h3></div><div class="acc-grid">`;
+  const D = debtTotals();
+
+  let html = `<div class="sec-head" style="margin-top:22px;"><h3>Cash & Payment Accounts</h3></div><div class="acc-grid">`;
   state.accounts.forEach(a=>{
     html += `<div class="acc-card"><span class="name">${escapeHtml(a)}</span><span class="bal tabular">${fmt(bal[a]||0)}</span></div>`;
   });
-  html += `<div class="acc-total"><span class="name">Total across accounts</span><span class="bal tabular">${fmt(total)}</span></div>`;
+  html += `<div class="acc-total"><span class="name">Total Available Cash</span><span class="bal tabular">${fmt(total)}</span></div>`;
   html += `</div>`;
+
+  // Accounts Receivable & Payable section
+  html += `<div class="sec-head" style="margin-top:26px;"><h3>Accounts Receivable (Paona)</h3><button class="btn small" style="border:1px solid var(--line); background:var(--paper-raised);" onclick="openAdd('lend')">+ Lend</button></div>`;
+  const arList = state.debts.filter(d => d.type === 'lend' && !d.settled);
+  if(arList.length === 0){
+    html += emptyState('No pending receivables', 'Nobody owes you money right now.');
+  } else {
+    arList.forEach(d => {
+      html += `
+        <div class="debt-card-row">
+          <div>
+            <div class="p-name">${escapeHtml(d.person)}</div>
+            <div class="p-sub">${fmtDate(d.date)} · ${d.account}</div>
+          </div>
+          <div class="right-side">
+            <div class="p-amt tabular" style="color:var(--blue);">${fmt(d.amount)}</div>
+            <button class="settle-btn" onclick="settleDebt('${d.id}')">Collect ✓</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  html += `<div class="sec-head" style="margin-top:26px;"><h3>Accounts Payable (Dena)</h3><button class="btn small" style="border:1px solid var(--line); background:var(--paper-raised);" onclick="openAdd('borrow')">+ Borrow</button></div>`;
+  const apList = state.debts.filter(d => d.type === 'borrow' && !d.settled);
+  if(apList.length === 0){
+    html += emptyState('No pending payables', 'You do not owe money to anyone.');
+  } else {
+    apList.forEach(d => {
+      html += `
+        <div class="debt-card-row">
+          <div>
+            <div class="p-name">${escapeHtml(d.person)}</div>
+            <div class="p-sub">${fmtDate(d.date)} · ${d.account}</div>
+          </div>
+          <div class="right-side">
+            <div class="p-amt tabular" style="color:var(--purple);">${fmt(d.amount)}</div>
+            <button class="settle-btn" onclick="settleDebt('${d.id}')">Pay Back ✓</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
   return html;
+}
+
+function settleDebt(debtId){
+  const d = state.debts.find(x => x.id === debtId);
+  if(!d) return;
+
+  const actionText = d.type === 'lend' 
+    ? `Have you collected ${fmt(d.amount)} from ${d.person}? This will add the cash back into ${d.account}.`
+    : `Have you paid back ${fmt(d.amount)} to ${d.person}? This will deduct the cash from ${d.account}.`;
+
+  if(!confirm(actionText)) return;
+
+  d.settled = true;
+  d.settledDate = todayISO();
+
+  // Create settlement transaction to correctly balance cash book
+  state.transactions.push({
+    id: uid(),
+    type: d.type === 'lend' ? 'settle_lend' : 'settle_borrow',
+    amount: d.amount,
+    person: d.person,
+    account: d.account,
+    date: todayISO(),
+    note: `Settled ${d.type === 'lend' ? 'Paona' : 'Dena'}`,
+    ts: Date.now()
+  });
+
+  persist();
+  render();
+}
+
+function openDebtList(type){
+  goTab('accounts');
 }
 
 function renderReports(){
@@ -989,7 +1193,7 @@ function tabBtn(val,label){
 }
 function setPeriod(p){ state.reportPeriod = p; render(); }
 
-/* Accordion toggling helper */
+/* Accordion toggling */
 function toggleAccordion(id){
   const el = document.getElementById(id);
   if(el){
@@ -1170,7 +1374,8 @@ function removeRecurring(id){ state.recurring = state.recurring.filter(r=>r.id!=
 function exportData(){
   const blob = new Blob([JSON.stringify({
     transactions: state.transactions, categories: state.categories,
-    sources: state.sources, accounts: state.accounts, recurring: state.recurring
+    sources: state.sources, accounts: state.accounts, recurring: state.recurring,
+    debts: state.debts
   }, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1179,10 +1384,10 @@ function exportData(){
   URL.revokeObjectURL(url);
 }
 function eraseAll(){
-  if(!confirm('This will permanently delete every transaction, category, account and recurring bill. Continue?')) return;
+  if(!confirm('This will permanently delete all records including transactions, accounts, receivables and payables. Continue?')) return;
   state.transactions = []; state.categories = DEFAULT_CATEGORIES.slice();
   state.sources = DEFAULT_SOURCES.slice(); state.accounts = DEFAULT_ACCOUNTS.slice();
-  state.recurring = [];
+  state.recurring = []; state.debts = [];
   persist(); render();
 }
 
@@ -1250,7 +1455,7 @@ function renderSheet(){
       <label class="field"><span class="fl">Account</span><select id="fAccount">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Lunch"></label>
     `;
-  } else {
+  } else if(addType==='transfer'){
     fields = `
       <label class="field"><span class="fl">Amount</span>
         <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
@@ -1260,15 +1465,37 @@ function renderSheet(){
       <label class="field"><span class="fl">To account</span><select id="fTo">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Moving to bank"></label>
     `;
+  } else if(addType==='lend'){
+    fields = `
+      <label class="field"><span class="fl">Lent Amount (Receivable)</span>
+        <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
+      </label>
+      <label class="field"><span class="fl">Who owes you? (Person name)</span><input id="fPerson" placeholder="e.g. Shakil"></label>
+      <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
+      <label class="field"><span class="fl">Paid from Account</span><select id="fAccount">${accOptions}</select></label>
+      <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Lunch bill dhar nilo"></label>
+    `;
+  } else if(addType==='borrow'){
+    fields = `
+      <label class="field"><span class="fl">Borrowed Amount (Payable)</span>
+        <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
+      </label>
+      <label class="field"><span class="fl">Who did you borrow from? (Person name)</span><input id="fPerson" placeholder="e.g. Tanvir"></label>
+      <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
+      <label class="field"><span class="fl">Received into Account</span><select id="fAccount">${accOptions}</select></label>
+      <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Hostel rent dhar"></label>
+    `;
   }
 
   body.innerHTML = `
     <div class="handle"></div>
-    <h2>Add ${addType==='income'?'income':addType==='expense'?'expense':'transfer'}</h2>
+    <h2>${addType==='income'?'Add income':addType==='expense'?'Add expense':addType==='transfer'?'Transfer':addType==='lend'?'Lend Money (Paona)': 'Borrow Money (Dena)'}</h2>
     <div class="segmented">
       <button class="${addType==='income'?'active':''}" onclick="setAddType('income')">Income</button>
       <button class="${addType==='expense'?'active':''}" onclick="setAddType('expense')">Expense</button>
       <button class="${addType==='transfer'?'active':''}" onclick="setAddType('transfer')">Transfer</button>
+      <button class="${addType==='lend'?'active':''}" onclick="setAddType('lend')">Lend</button>
+      <button class="${addType==='borrow'?'active':''}" onclick="setAddType('borrow')">Borrow</button>
     </div>
     <div class="err-msg" id="errMsg"></div>
     ${fields}
@@ -1304,7 +1531,7 @@ function saveTransaction(){
     const category = document.getElementById('fCategory').value;
     const account = document.getElementById('fAccount').value;
     state.transactions.push({id:uid(), type:'expense', amount, category, account, note, date, ts});
-  } else {
+  } else if(addType==='transfer'){
     const from = document.getElementById('fFrom').value;
     const to = document.getElementById('fTo').value;
     if(from === to){
@@ -1312,6 +1539,37 @@ function saveTransaction(){
       return;
     }
     state.transactions.push({id:uid(), type:'transfer', amount, from, to, note, date, ts});
+  } else if(addType==='lend' || addType==='borrow'){
+    const person = document.getElementById('fPerson').value.trim();
+    const account = document.getElementById('fAccount').value;
+    if(!person){
+      showErr('Please enter the person\'s name.');
+      return;
+    }
+    const debtId = uid();
+    // Add to active debts
+    state.debts.push({
+      id: debtId,
+      type: addType,
+      person,
+      amount,
+      account,
+      date,
+      note,
+      settled: false
+    });
+    // Add transaction
+    state.transactions.push({
+      id: uid(),
+      type: addType,
+      debtId,
+      amount,
+      person,
+      account,
+      note,
+      date,
+      ts
+    });
   }
 
   persist();
