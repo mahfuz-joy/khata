@@ -1,7 +1,8 @@
 const CACHE_NAME = 'khata-cache-v1';
 const ASSETS = [
   './',
-  './index.html'
+  './index.html',
+  './avatar.jpg'
 ];
 
 self.addEventListener('install', (e) => {
