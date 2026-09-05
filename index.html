@@ -32,6 +32,20 @@
     --font-display:'Fraunces',serif;
     --font-ui:'Inter',sans-serif;
   }
+  body.dark-mode{
+    --paper:#12181F;
+    --paper-raised:#1B242D;
+    --ink:#ECEFF4;
+    --ink-soft:#A0ABBA;
+    --ink-faint:#6B798A;
+    --teal:#3EA88E;
+    --teal-soft:#1A332B;
+    --rust:#D65D45;
+    --rust-soft:#3D221D;
+    --gold:#D49E3E;
+    --gold-soft:#382D19;
+    --line:#2A3744;
+  }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
@@ -42,6 +56,7 @@
     justify-content:center;
     min-height:100vh;
   }
+  body.dark-mode{background:#0A0E13;}
   .app-shell{
     width:100%;
     max-width:460px;
@@ -56,7 +71,6 @@
   ::selection{background:var(--gold-soft);}
   .tabular{font-variant-numeric:tabular-nums;}
 
-  /* ---------- header ---------- */
   header.top{
     padding:22px 20px 14px;
     display:flex;
@@ -76,7 +90,6 @@
     color:var(--ink-faint);
   }
 
-  /* ---------- content area ---------- */
   #content{
     flex:1;
     overflow-y:auto;
@@ -84,7 +97,6 @@
     -webkit-overflow-scrolling:touch;
   }
 
-  /* ---------- balance hero ---------- */
   .hero{
     background:var(--ink);
     color:var(--paper);
@@ -92,6 +104,7 @@
     padding:24px 22px;
     margin-bottom:18px;
   }
+  body.dark-mode .hero{background:var(--paper-raised); border:1px solid var(--line);}
   .hero .label{
     font-size:12px;
     color:#B9C2C9;
@@ -115,7 +128,6 @@
   .hero .row .item.in .v{color:#8FD8BE;}
   .hero .row .item.out .v{color:#E6A08F;}
 
-  /* ---------- quick actions ---------- */
   .quick{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -138,7 +150,6 @@
   .quick button.expense{color:var(--rust);}
   .quick button.transfer{color:var(--gold);}
 
-  /* ---------- section heading ---------- */
   .sec-head{
     display:flex;
     align-items:center;
@@ -158,7 +169,6 @@
     cursor:pointer;
   }
 
-  /* ---------- transaction list ---------- */
   .tx-list{border-top:1px solid var(--line);}
   .tx{
     display:flex;
@@ -192,7 +202,6 @@
   }
   .empty .big{font-family:var(--font-display); font-size:15px; color:var(--ink-soft); margin-bottom:4px;}
 
-  /* ---------- reminder strip ---------- */
   .reminder{
     background:var(--gold-soft);
     border:1px solid #E9D9AE;
@@ -204,7 +213,6 @@
   .reminder .h{font-weight:700; color:#8C6519; margin-bottom:6px; font-size:12.5px;}
   .reminder .line{display:flex; justify-content:space-between; padding:3px 0; color:#6B5013;}
 
-  /* ---------- account cards ---------- */
   .acc-grid{display:flex; flex-direction:column; gap:10px; margin-bottom:10px;}
   .acc-card{
     display:flex; justify-content:space-between; align-items:center;
@@ -221,10 +229,10 @@
     display:flex; justify-content:space-between; align-items:center;
     margin-top:4px;
   }
+  body.dark-mode .acc-total{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
   .acc-total .name{font-size:13px; color:#B9C2C9;}
   .acc-total .bal{font-family:var(--font-display); font-size:19px; font-weight:700;}
 
-  /* ---------- forms ---------- */
   label.field{display:block; margin-bottom:16px;}
   label.field .fl{font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:6px; display:block;}
   .field input, .field select, .field textarea{
@@ -270,6 +278,7 @@
     cursor:pointer;
   }
   .segmented button.active{background:var(--ink); color:var(--paper);}
+  body.dark-mode .segmented button.active{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
 
   .btn{
     display:block;
@@ -284,6 +293,7 @@
     cursor:pointer;
   }
   .btn.primary{background:var(--ink); color:var(--paper);}
+  body.dark-mode .btn.primary{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
   .btn.primary:active{opacity:.85;}
   .btn.ghost{background:transparent; color:var(--ink-soft); margin-top:8px;}
   .btn.small{padding:10px; font-size:13px; width:auto;}
@@ -293,7 +303,6 @@
     margin-bottom:14px; display:none; font-weight:600;
   }
 
-  /* ---------- category pills / manage lists ---------- */
   .pill-list{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
   .pill{
     background:var(--paper-raised); border:1px solid var(--line);
@@ -312,7 +321,6 @@
   .manage-row .t2{font-size:12px; color:var(--ink-faint);}
   .manage-row .x{color:var(--rust); font-size:13px; font-weight:600; cursor:pointer;}
 
-  /* ---------- reports ---------- */
   .period-tabs{display:flex; gap:8px; margin-bottom:18px; overflow-x:auto;}
   .period-tabs button{
     white-space:nowrap;
@@ -321,6 +329,8 @@
     cursor:pointer;
   }
   .period-tabs button.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  body.dark-mode .period-tabs button.active{background:var(--paper-raised); color:var(--ink); border-color:var(--line);}
+  
   .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:22px;}
   .stat{background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:14px 10px;}
   .stat .k{font-size:11px; color:var(--ink-faint); margin-bottom:4px;}
@@ -332,7 +342,6 @@
   .bar-track{height:8px; background:var(--line); border-radius:6px; overflow:hidden;}
   .bar-fill{height:100%; background:var(--rust); border-radius:6px;}
 
-  /* ---------- bottom nav ---------- */
   nav.bottom{
     position:absolute; left:0; right:0; bottom:0;
     background:var(--paper-raised);
@@ -370,7 +379,6 @@
   }
   .fab:active{transform:scale(.94);}
 
-  /* ---------- bottom sheet ---------- */
   .sheet-overlay{
     position:absolute; inset:0;
     background:rgba(28,43,57,.42);
@@ -429,7 +437,7 @@
       <span>Reports</span>
     </button>
     <button data-tab="settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06-.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06-.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06-.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1z"/></svg>
       <span>Settings</span>
     </button>
   </nav>
@@ -440,7 +448,6 @@
 </div>
 
 <script>
-/* ============================= DATA LAYER ============================= */
 const DB = {
   get(key, fallback){
     try{ const v = localStorage.getItem('khata_'+key); return v ? JSON.parse(v) : fallback; }
@@ -449,8 +456,7 @@ const DB = {
   set(key, val){ localStorage.setItem('khata_'+key, JSON.stringify(val)); }
 };
 
-/* ============================= GOOGLE DRIVE SYNC ============================= */
-const GOOGLE_CLIENT_ID = '341416834173-h5o70osb7v3986bc2oqt9vakblbmcpk1.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '341416834173-h5o70osb7v3986bc2oqt9vakblbmcpk1.apps.googleusercontent.com';[cite: 1]
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
 const DRIVE_FILENAME = 'khata-data.json';
 
@@ -459,6 +465,22 @@ let driveAccessToken = null;
 let drivePendingAction = null;
 let driveAutoSync = DB.get('driveAutoSync', true);
 let driveStatus = DB.get('driveStatus', {lastSync:null});
+let darkModeEnabled = DB.get('darkMode', false);
+
+function applyTheme(){
+  if(darkModeEnabled){
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+}
+applyTheme();
+
+function toggleDarkMode(checked){
+  darkModeEnabled = checked;
+  DB.set('darkMode', darkModeEnabled);
+  applyTheme();
+}
 
 function driveConfigured(){
   return GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID.indexOf('PASTE_YOUR') !== 0;
@@ -555,7 +577,7 @@ async function driveRestoreNow(){
 
 function driveConnectClick(){
   if(!driveConfigured()){
-    alert('Google Drive sync is not set up yet. Follow the setup guide to add your Client ID and host this file online.');
+    alert('Google Drive sync is not set up yet.');
     return;
   }
   if(!driveTokenClient){ setSyncMsg('Still loading Google sign-in, try again in a moment.'); return; }
@@ -565,7 +587,7 @@ function driveConnectClick(){
 }
 function driveRestoreClick(){
   if(!driveConfigured()){
-    alert('Google Drive sync is not set up yet. Follow the setup guide to add your Client ID and host this file online.');
+    alert('Google Drive sync is not set up yet.');
     return;
   }
   if(!driveTokenClient){ setSyncMsg('Still loading Google sign-in, try again in a moment.'); return; }
@@ -617,7 +639,6 @@ function fmtDate(iso){
 }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
-/* ============================= CALCULATIONS ============================= */
 function totals(){
   let income=0, expense=0;
   state.transactions.forEach(t=>{
@@ -669,7 +690,6 @@ function reportData(period){
   return {income, expense, remaining: income-expense, cats};
 }
 
-/* ============================= RENDER: HOME ============================= */
 function renderHome(){
   const T = totals();
   const recent = state.transactions.slice().sort((a,b)=> b.ts-a.ts).slice(0,6);
@@ -725,16 +745,44 @@ function txRow(t){
       <div class="t2">${sub}</div>
     </div>
     <div class="amt tabular">${sign}${fmt(t.amount)}</div>
-    <div style="color: var(--rust); margin-left: 12px; font-weight: 700; cursor: pointer; padding: 0 8px; font-size: 18px;" onclick="deleteTransaction('${t.id}')">×</div>
+    <div style="position:relative; margin-left:8px;">
+      <button onclick="toggleTxMenu(event, '${t.id}')" style="background:none; border:none; font-size:18px; color:var(--ink-faint); cursor:pointer; padding:4px 8px;">⋮</button>
+    </div>
   </div>`;
 }
 
+function toggleTxMenu(e, id){
+  e.stopPropagation();
+  const existing = document.getElementById('txMenuPopup');
+  if(existing) existing.remove();
+
+  const menu = document.createElement('div');
+  menu.id = 'txMenuPopup';
+  menu.style.cssText = 'position:absolute; right:0; top:30px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.1); z-index:50; overflow:hidden; min-width:100px;';
+  menu.innerHTML = `
+    <div onclick="editTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; border-bottom:1px solid var(--line); color:var(--ink);">Edit</div>
+    <div onclick="deleteTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; color:var(--rust); cursor:pointer;">Delete</div>
+  `;
+  e.currentTarget.parentNode.appendChild(menu);
+
+  document.addEventListener('click', () => menu.remove(), {once:true});
+}
+
 function deleteTransaction(id){
-  if(confirm('Are you sure you want to delete this transaction?')){
-    state.transactions = state.transactions.filter(t => t.id !== id);
-    persist();
-    render();
-  }
+  state.transactions = state.transactions.filter(t => t.id !== id);
+  persist();
+  render();
+}
+
+function editTransaction(id){
+  const t = state.transactions.find(x => x.id === id);
+  if(!t) return;
+  openAdd(t.type);
+  document.getElementById('fAmount').value = t.amount;
+  if(t.note) document.getElementById('fNote').value = t.note;
+  state.transactions = state.transactions.filter(x => x.id !== id);
+  persist();
+  render();
 }
 
 function escapeHtml(s){
@@ -742,7 +790,6 @@ function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ============================= RENDER: HISTORY ============================= */
 function renderHistory(){
   const list = state.transactions.slice().sort((a,b)=> b.ts-a.ts);
   let html = `<div class="sec-head" style="margin-top:22px;"><h3>All transactions</h3></div>`;
@@ -754,7 +801,6 @@ function renderHistory(){
   return html;
 }
 
-/* ============================= RENDER: ACCOUNTS ============================= */
 function renderAccounts(){
   const bal = accountBalances();
   const total = Object.values(bal).reduce((a,b)=>a+b,0);
@@ -767,7 +813,6 @@ function renderAccounts(){
   return html;
 }
 
-/* ============================= RENDER: REPORTS ============================= */
 function renderReports(){
   const period = state.reportPeriod;
   const R = reportData(period);
@@ -802,9 +847,14 @@ function tabBtn(val,label){
 }
 function setPeriod(p){ state.reportPeriod = p; render(); }
 
-/* ============================= RENDER: SETTINGS ============================= */
 function renderSettings(){
-  let html = `<div class="sec-head" style="margin-top:22px;"><h3>Categories</h3></div>
+  let html = `<div class="sec-head" style="margin-top:22px;"><h3>Appearance</h3></div>
+  <div class="manage-row">
+    <div class="t1">Dark mode</div>
+    <input type="checkbox" ${darkModeEnabled?'checked':''} onchange="toggleDarkMode(this.checked)">
+  </div>
+
+  <div class="sec-head"><h3>Categories</h3></div>
   <div class="pill-list" id="catPills">
     ${state.categories.map(c=>`<div class="pill">${escapeHtml(c)} ${DEFAULT_CATEGORIES.includes(c)?'':`<span class="x" onclick="removeCategory('${escId(c)}')">×</span>`}</div>`).join('')}
   </div>
@@ -919,7 +969,6 @@ function eraseAll(){
   persist(); render();
 }
 
-/* ============================= NAV / RENDER LOOP ============================= */
 function goTab(t){ state.tab = t; render(); }
 
 function render(){
@@ -940,7 +989,6 @@ document.querySelectorAll('nav.bottom button').forEach(b=>{
   b.addEventListener('click', ()=> goTab(b.dataset.tab));
 });
 
-/* ============================= ADD TRANSACTION SHEET ============================= */
 let addType = 'expense';
 
 function openAdd(type){
@@ -1022,29 +1070,22 @@ function saveTransaction(){
   const date = todayISO();
   const ts = Date.now();
 
+  if(!amount || amount <= 0){
+    showErr('Please enter a valid amount greater than zero.');
+    return;
+  }
+
   if(addType==='income'){
     const source = document.getElementById('fSource').value;
     const account = document.getElementById('fAccount').value;
-    if(!amount || amount <= 0){
-      showErr('Please enter a valid amount greater than zero.');
-      return;
-    }
     state.transactions.push({id:uid(), type:'income', amount, source, account, note, date, ts});
   } else if(addType==='expense'){
     const category = document.getElementById('fCategory').value;
     const account = document.getElementById('fAccount').value;
-    if(!amount || amount <= 0){
-      showErr('Please enter a valid amount greater than zero.');
-      return;
-    }
     state.transactions.push({id:uid(), type:'expense', amount, category, account, note, date, ts});
   } else {
     const from = document.getElementById('fFrom').value;
     const to = document.getElementById('fTo').value;
-    if(!amount || amount <= 0){
-      showErr('Please enter a valid amount greater than zero.');
-      return;
-    }
     if(from === to){
       showErr('From and to accounts must be different.');
       return;
@@ -1057,7 +1098,6 @@ function saveTransaction(){
   render();
 }
 
-/* ============================= INIT ============================= */
 render();
 </script>
 </body>
