@@ -823,9 +823,17 @@ function reportData(period){
   return {income, expense, remaining: income-expense, cats};
 }
 
+/* Sorts transactions primarily by date, then by submission timestamp */
+function sortedTransactions(){
+  return state.transactions.slice().sort((a,b)=>{
+    if(b.date !== a.date) return b.date.localeCompare(a.date);
+    return (b.ts || 0) - (a.ts || 0);
+  });
+}
+
 function renderHome(){
   const T = totals();
-  const recent = state.transactions.slice().sort((a,b)=> b.ts-a.ts).slice(0,6);
+  const recent = sortedTransactions().slice(0,6);
   const dueRecurring = state.recurring;
 
   let html = `
@@ -912,6 +920,7 @@ function editTransaction(id){
   if(!t) return;
   openAdd(t.type);
   document.getElementById('fAmount').value = t.amount;
+  if(document.getElementById('fDate')) document.getElementById('fDate').value = t.date;
   if(t.note) document.getElementById('fNote').value = t.note;
   state.transactions = state.transactions.filter(x => x.id !== id);
   persist();
@@ -924,7 +933,7 @@ function escapeHtml(s){
 }
 
 function renderHistory(){
-  const list = state.transactions.slice().sort((a,b)=> b.ts-a.ts);
+  const list = sortedTransactions();
   let html = `<div class="sec-head" style="margin-top:22px;"><h3>All transactions</h3></div>`;
   if(list.length===0){
     html += emptyState('No transactions yet', 'Everything you add will show up here.');
@@ -1226,6 +1235,7 @@ function renderSheet(){
       <label class="field"><span class="fl">Amount</span>
         <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
       </label>
+      <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
       <label class="field"><span class="fl">Source</span><select id="fSource">${srcOptions}</select></label>
       <label class="field"><span class="fl">Account</span><select id="fAccount">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Monthly allowance"></label>
@@ -1235,6 +1245,7 @@ function renderSheet(){
       <label class="field"><span class="fl">Amount</span>
         <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
       </label>
+      <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
       <label class="field"><span class="fl">Category</span><select id="fCategory">${catOptions}</select></label>
       <label class="field"><span class="fl">Account</span><select id="fAccount">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Lunch"></label>
@@ -1244,6 +1255,7 @@ function renderSheet(){
       <label class="field"><span class="fl">Amount</span>
         <div class="amount-input"><span class="sym">৳</span><input id="fAmount" type="number" inputmode="decimal" placeholder="0" autofocus></div>
       </label>
+      <label class="field"><span class="fl">Date</span><input id="fDate" type="date" value="${todayISO()}"></label>
       <label class="field"><span class="fl">From account</span><select id="fFrom">${accOptions}</select></label>
       <label class="field"><span class="fl">To account</span><select id="fTo">${accOptions}</select></label>
       <label class="field"><span class="fl">Note (optional)</span><input id="fNote" placeholder="e.g. Moving to bank"></label>
@@ -1274,8 +1286,9 @@ function showErr(msg){
 function saveTransaction(){
   const amountEl = document.getElementById('fAmount');
   const amount = parseFloat(amountEl.value);
+  const dateEl = document.getElementById('fDate');
+  const date = (dateEl && dateEl.value) ? dateEl.value : todayISO();
   const note = document.getElementById('fNote').value.trim();
-  const date = todayISO();
   const ts = Date.now();
 
   if(!amount || amount <= 0){
