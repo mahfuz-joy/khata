@@ -33,18 +33,18 @@
     --font-ui:'Inter',sans-serif;
   }
   body.dark-mode{
-    --paper:#12181F;
-    --paper-raised:#1B242D;
-    --ink:#ECEFF4;
-    --ink-soft:#A0ABBA;
-    --ink-faint:#6B798A;
-    --teal:#3EA88E;
-    --teal-soft:#1A332B;
-    --rust:#D65D45;
-    --rust-soft:#3D221D;
-    --gold:#D49E3E;
-    --gold-soft:#382D19;
-    --line:#2A3744;
+    --paper:#0f1720;
+    --paper-raised:#18222d;
+    --ink:#F3F6FA;
+    --ink-soft:#9FB0C2;
+    --ink-faint:#627488;
+    --teal:#43C39E;
+    --teal-soft:#17332B;
+    --rust:#FF6B52;
+    --rust-soft:#3C1F1A;
+    --gold:#F5B742;
+    --gold-soft:#3D2F14;
+    --line:#263546;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -56,7 +56,7 @@
     justify-content:center;
     min-height:100vh;
   }
-  body.dark-mode{background:#0A0E13;}
+  body.dark-mode{background:#070b10;}
   .app-shell{
     width:100%;
     max-width:460px;
@@ -104,10 +104,13 @@
     padding:24px 22px;
     margin-bottom:18px;
   }
-  body.dark-mode .hero{background:var(--paper-raised); border:1px solid var(--line);}
+  body.dark-mode .hero{
+    background:linear-gradient(135deg, #1A2836 0%, #111A23 100%);
+    border:1px solid var(--line);
+  }
   .hero .label{
     font-size:12px;
-    color:#B9C2C9;
+    color:var(--ink-faint);
     margin-bottom:4px;
   }
   .hero .balance{
@@ -116,17 +119,21 @@
     font-weight:600;
     line-height:1.1;
     margin-bottom:16px;
+    color:var(--paper);
   }
+  body.dark-mode .hero .balance{color:#FFFFFF; text-shadow:0 2px 10px rgba(0,0,0,.3);}
   .hero .row{
     display:flex;
     gap:22px;
     border-top:1px solid rgba(255,255,255,.14);
     padding-top:14px;
   }
-  .hero .row .item .k{font-size:11px;color:#9FAAB2;margin-bottom:2px;}
+  .hero .row .item .k{font-size:11px;color:var(--ink-faint);margin-bottom:2px;}
   .hero .row .item .v{font-family:var(--font-display);font-size:17px;font-weight:600;}
   .hero .row .item.in .v{color:#8FD8BE;}
+  body.dark-mode .hero .row .item.in .v{color:#43C39E;}
   .hero .row .item.out .v{color:#E6A08F;}
+  body.dark-mode .hero .row .item.out .v{color:#FF8A75;}
 
   .quick{
     display:grid;
@@ -204,14 +211,14 @@
 
   .reminder{
     background:var(--gold-soft);
-    border:1px solid #E9D9AE;
+    border:1px solid var(--line);
     border-radius:14px;
     padding:12px 14px;
     margin-bottom:18px;
     font-size:13px;
   }
-  .reminder .h{font-weight:700; color:#8C6519; margin-bottom:6px; font-size:12.5px;}
-  .reminder .line{display:flex; justify-content:space-between; padding:3px 0; color:#6B5013;}
+  .reminder .h{font-weight:700; color:var(--gold); margin-bottom:6px; font-size:12.5px;}
+  .reminder .line{display:flex; justify-content:space-between; padding:3px 0; color:var(--ink-soft);}
 
   .acc-grid{display:flex; flex-direction:column; gap:10px; margin-bottom:10px;}
   .acc-card{
@@ -230,7 +237,7 @@
     margin-top:4px;
   }
   body.dark-mode .acc-total{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
-  .acc-total .name{font-size:13px; color:#B9C2C9;}
+  .acc-total .name{font-size:13px; color:var(--ink-faint);}
   .acc-total .bal{font-family:var(--font-display); font-size:19px; font-weight:700;}
 
   label.field{display:block; margin-bottom:16px;}
@@ -247,7 +254,7 @@
     appearance:none;
   }
   .field input:focus, .field select:focus, .field textarea:focus{
-    outline:2px solid var(--ink); outline-offset:1px;
+    outline:2px solid var(--gold); outline-offset:1px;
   }
   .amount-input{position:relative;}
   .amount-input .sym{
@@ -381,7 +388,7 @@
 
   .sheet-overlay{
     position:absolute; inset:0;
-    background:rgba(28,43,57,.42);
+    background:rgba(0,0,0,.6);
     z-index:30;
     display:none;
   }
@@ -400,8 +407,33 @@
   .sheet .handle{width:38px; height:4px; background:var(--line); border-radius:3px; margin:0 auto 16px;}
   .sheet h2{font-family:var(--font-display); font-size:19px; margin:0 0 18px;}
 
+  /* Developer modal overlay */
+  .dev-modal {
+    position:absolute; inset:0; background:rgba(0,0,0,.65);
+    z-index:40; display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .dev-modal.show{display:flex;}
+  .dev-card{
+    background:var(--paper-raised); border:1px solid var(--line);
+    border-radius:20px; padding:26px 22px; width:100%; max-width:340px;
+    text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.3);
+  }
+  .dev-avatar{
+    width:64px; height:64px; border-radius:50%; background:var(--gold-soft); color:var(--gold);
+    font-family:var(--font-display); font-size:26px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    margin:0 auto 14px; border:2px solid var(--gold);
+  }
+  .dev-card h3{font-family:var(--font-display); font-size:18px; margin:0 0 4px;}
+  .dev-card .role{font-size:12.5px; color:var(--gold); font-weight:600; margin-bottom:14px;}
+  .dev-card .bio-box{
+    text-align:left; background:var(--paper); border:1px solid var(--line);
+    border-radius:12px; padding:12px; font-size:13px; margin-bottom:18px; color:var(--ink-soft);
+  }
+  .dev-card .bio-box p{margin:6px 0;}
+  .dev-card .bio-box strong{color:var(--ink);}
+
   @media (prefers-reduced-motion:reduce){
-    .sheet{transition:none;}
+    .sheet, .dev-modal{transition:none;}
   }
 </style>
 </head>
@@ -437,13 +469,26 @@
       <span>Reports</span>
     </button>
     <button data-tab="settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06-.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06-.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06-.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1z"/></svg>
       <span>Settings</span>
     </button>
   </nav>
 
   <div class="sheet-overlay" id="sheetOverlay">
     <div class="sheet" id="sheetBody"></div>
+  </div>
+
+  <div class="dev-modal" id="devModal">
+    <div class="dev-card">
+      <div class="dev-avatar">M</div>
+      <h3>MD. MAHFUZ ALAM JOY</h3>
+      <div class="role">Creator & Developer</div>
+      <div class="bio-box">
+        <p><strong>Education:</strong> B.Sc. in Textile Engineering</p>
+        <p><strong>Email:</strong> mahfuzalamjoy56@gmail.com</p>
+      </div>
+      <button class="btn primary" onclick="closeDevModal()">Close</button>
+    </div>
   </div>
 </div>
 
@@ -480,6 +525,13 @@ function toggleDarkMode(checked){
   darkModeEnabled = checked;
   DB.set('darkMode', darkModeEnabled);
   applyTheme();
+}
+
+function openDevModal(){
+  document.getElementById('devModal').classList.add('show');
+}
+function closeDevModal(){
+  document.getElementById('devModal').classList.remove('show');
 }
 
 function driveConfigured(){
@@ -758,7 +810,7 @@ function toggleTxMenu(e, id){
 
   const menu = document.createElement('div');
   menu.id = 'txMenuPopup';
-  menu.style.cssText = 'position:absolute; right:0; top:30px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.1); z-index:50; overflow:hidden; min-width:100px;';
+  menu.style.cssText = 'position:absolute; right:0; top:30px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.2); z-index:50; overflow:hidden; min-width:100px;';
   menu.innerHTML = `
     <div onclick="editTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; border-bottom:1px solid var(--line); color:var(--ink);">Edit</div>
     <div onclick="deleteTransaction('${id}')" style="padding:10px 14px; font-size:13px; font-weight:600; color:var(--rust); cursor:pointer;">Delete</div>
@@ -848,7 +900,15 @@ function tabBtn(val,label){
 function setPeriod(p){ state.reportPeriod = p; render(); }
 
 function renderSettings(){
-  let html = `<div class="sec-head" style="margin-top:22px;"><h3>Appearance</h3></div>
+  let html = `
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:22px;">
+    <h3 style="font-family:var(--font-display); font-size:16px; font-weight:600; margin:0;">Settings</h3>
+    <button onclick="openDevModal()" style="background:var(--gold-soft); color:var(--gold); border:1px solid var(--gold); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
+      <span>ℹ️</span> About Developer
+    </button>
+  </div>
+
+  <div class="sec-head" style="margin-top:16px;"><h3>Appearance</h3></div>
   <div class="manage-row">
     <div class="t1">Dark mode</div>
     <input type="checkbox" ${darkModeEnabled?'checked':''} onchange="toggleDarkMode(this.checked)">
