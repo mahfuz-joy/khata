@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.mahfuzjoy.khata",
+        "sha256_cert_fingerprints": ["92:5A:DA:D1:70:81:5B:2E:8D:9D:72:12:91:3F:6B:C0:9E:A6:C4:09:52:F9:7F:9D:1B:41:C9:2E:E8:E1:E1:45"]
+      }
+    }]
