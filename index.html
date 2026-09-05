@@ -1160,5 +1160,21 @@ function saveTransaction(){
 
 render();
 </script>
+  <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registered successfully'))
+      .catch((err) => console.log('Service Worker registration failed:', err));
+  });
+
+  window.addEventListener('online', () => {
+    console.log('Back online. Triggering auto-sync...');
+    if (typeof driveBackupNow === 'function' && driveAccessToken) {
+      driveBackupNow();
+    }
+  });
+}
+</script>
 </body>
 </html>
