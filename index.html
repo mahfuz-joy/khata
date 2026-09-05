@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Khata">
 <title>Khata — your money, plainly kept</title>
-  <link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231C2B39'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23C99A3D' font-family='Georgia,serif'%3E৳%3C/text%3E%3C/svg%3E">
@@ -350,88 +350,114 @@
   .bar-track{height:8px; background:var(--line); border-radius:6px; overflow:hidden;}
   .bar-fill{height:100%; background:var(--rust); border-radius:6px;}
 
-nav.bottom{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:460px;
-  background:var(--paper-raised);
-  border-top:1px solid var(--line);
-  display:flex;
-  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-  z-index:90;
-}
-nav.bottom button{
-  flex:1;
-  background:none; border:none;
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  padding:6px 2px;
-  color:var(--ink-faint);
-  cursor:pointer;
-  font-family:var(--font-ui);
-}
-nav.bottom button.active{color:var(--ink);}
-nav.bottom button svg{width:21px; height:21px;}
-nav.bottom button span{font-size:10px; font-weight:600;}
+  nav.bottom{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:460px;
+    background:var(--paper-raised);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    z-index:90;
+  }
+  nav.bottom button{
+    flex:1;
+    background:none; border:none;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:6px 2px;
+    color:var(--ink-faint);
+    cursor:pointer;
+    font-family:var(--font-ui);
+  }
+  nav.bottom button.active{color:var(--ink);}
+  nav.bottom button svg{width:21px; height:21px;}
+  nav.bottom button span{font-size:10px; font-weight:600;}
 
-.fab{
-  position:fixed;
-  right:max(20px, calc(50% - 210px));
-  bottom:calc(75px + env(safe-area-inset-bottom));
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:var(--gold);
-  color:#fff;
-  border:none;
-  font-size:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 8px 20px rgba(192,138,46,.45);
-  cursor:pointer;
-  z-index:95;
-}
+  .fab{
+    position:fixed;
+    right:max(20px, calc(50% - 210px));
+    bottom:calc(75px + env(safe-area-inset-bottom));
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:var(--gold);
+    color:#fff;
+    border:none;
+    font-size:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px rgba(192,138,46,.45);
+    cursor:pointer;
+    z-index:95;
+  }
   .fab:active{transform:scale(.94);}
 
   .sheet-overlay{
-    position:absolute; inset:0;
+    position:fixed; inset:0;
     background:rgba(0,0,0,.6);
-    z-index:30;
+    z-index:96;
     display:none;
   }
   .sheet-overlay.show{display:block;}
   .sheet{
-    position:absolute; left:0; right:0; bottom:0;
+    position:fixed; left:50%; bottom:0;
+    transform:translate(-50%, 100%);
+    width:100%; max-width:460px;
     background:var(--paper);
     border-radius:var(--radius-sheet) var(--radius-sheet) 0 0;
     padding:20px 20px calc(24px + env(safe-area-inset-bottom));
     max-height:88%;
     overflow-y:auto;
-    transform:translateY(100%);
     transition:transform .28s cubic-bezier(.2,.8,.2,1);
+    z-index:97;
   }
-  .sheet-overlay.show .sheet{transform:translateY(0);}
+  .sheet-overlay.show .sheet{transform:translate(-50%, 0);}
   .sheet .handle{width:38px; height:4px; background:var(--line); border-radius:3px; margin:0 auto 16px;}
   .sheet h2{font-family:var(--font-display); font-size:19px; margin:0 0 18px;}
 
-  /* Developer modal overlay */
-.dev-modal {
-    position:fixed; inset:0; background:rgba(0,0,0,.75);
-    z-index:999; display:none; align-items:center; justify-content:center; padding:20px;
+  /* Developer modal overlay: completely fixed in screen center */
+  .dev-modal{
+    position:fixed !important;
+    top:0; left:0; right:0; bottom:0;
+    width:100vw; height:100vh;
+    background:rgba(0,0,0,.75);
+    z-index:9999 !important;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    box-sizing:border-box;
   }
-  .dev-modal.show{display:flex;}
+  .dev-modal.show{display:flex !important;}
   .dev-card{
-    background:var(--paper-raised); border:1px solid var(--line);
-    border-radius:20px; padding:26px 22px; width:100%; max-width:340px;
-    text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.3);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:26px 22px;
+    width:100%;
+    max-width:340px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
   }
   .dev-avatar{
-    width:64px; height:64px; border-radius:50%; background:var(--gold-soft); color:var(--gold);
-    font-family:var(--font-display); font-size:26px; font-weight:700; display:flex; align-items:center; justify-content:center;
-    margin:0 auto 14px; border:2px solid var(--gold);
+    width:80px; height:80px;
+    border-radius:50%;
+    margin:0 auto 14px;
+    border:2.5px solid var(--gold);
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--gold-soft);
+  }
+  .dev-avatar img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
   }
   .dev-card h3{font-family:var(--font-display); font-size:18px; margin:0 0 4px;}
   .dev-card .role{font-size:12.5px; color:var(--gold); font-weight:600; margin-bottom:14px;}
@@ -487,18 +513,21 @@ nav.bottom button span{font-size:10px; font-weight:600;}
   <div class="sheet-overlay" id="sheetOverlay">
     <div class="sheet" id="sheetBody"></div>
   </div>
+</div>
 
-  <div class="dev-modal" id="devModal">
-    <div class="dev-card">
-      <div class="dev-avatar">M</div>
-      <h3>MD. MAHFUZ ALAM JOY</h3>
-      <div class="role">Creator & Developer</div>
-      <div class="bio-box">
-        <p><strong>Education:</strong> B.Sc. in Textile Engineering</p>
-        <p><strong>Email:</strong> mahfuzalamjoy56@gmail.com</p>
-      </div>
-      <button class="btn primary" onclick="closeDevModal()">Close</button>
+<!-- Developer Modal moved outside app-shell to prevent scroll displacement -->
+<div class="dev-modal" id="devModal">
+  <div class="dev-card">
+    <div class="dev-avatar">
+      <img src="./avatar.jpg" alt="MD. MAHFUZ ALAM JOY" onerror="this.outerHTML='M'">
     </div>
+    <h3>MD. MAHFUZ ALAM JOY</h3>
+    <div class="role">Creator & Developer</div>
+    <div class="bio-box">
+      <p><strong>Education:</strong> B.Sc. in Textile Engineering</p>
+      <p><strong>Email:</strong> mahfuzalamjoy56@gmail.com</p>
+    </div>
+    <button class="btn primary" onclick="closeDevModal()">Close</button>
   </div>
 </div>
 
@@ -1170,7 +1199,7 @@ function saveTransaction(){
 
 render();
 </script>
-  <script>
+<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
