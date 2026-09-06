@@ -72,4 +72,5 @@
         <preference name="ShowSplashScreenSpinner" value="false" />
         <preference name="SplashMaintainAspectRatio" value="true" />
     </platform>
+            <plugin name="cordova-plugin-googleplus" spec="^8.5.2" />
 </widget>
