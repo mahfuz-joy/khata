@@ -1124,6 +1124,11 @@ async function checkForUpdates() {
         renderUpdateStatus();
         return;
       }
+      if (res.status === 403) {
+        lastUpdateStatus = { type: 'error', msg: 'GitHub server is busy (Rate limit reached). Please try again in a little while.' };
+        renderUpdateStatus();
+        return;
+      }
       throw new Error(`GitHub API returned status ${res.status}`);
     }
 
@@ -1162,6 +1167,8 @@ async function checkForUpdates() {
     let errMsg = 'Unable to check for updates. Check internet connection.';
     if (window.location && window.location.protocol === 'file:') {
       errMsg = 'Local file preview cannot access GitHub API. Works on hosted app and APK.';
+    } else if (err && err.message && err.message.includes('403')) {
+      errMsg = 'GitHub server is busy (Rate limit reached). Please try again in a little while.';
     }
     lastUpdateStatus = { type: 'error', msg: errMsg };
     renderUpdateStatus();
