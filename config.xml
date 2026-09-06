@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="com.mahfuzjoy.khata"
+        version="1.0.0">
+    <name>Khata</name>
+    <description>Personal finance and debt manager</description>
+    <author email="mahfuzalamjoy56@gmail.com" href="https://github.com/mahfuz-joy/khata">MD. MAHFUZ ALAM JOY</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <allow-navigation href="*" />
+
+    <!-- Core App Preferences -->
+    <preference name="Orientation" value="portrait" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="AndroidLaunchMode" value="singleTop" />
+    <preference name="KeepRunning" value="true" />
+    <preference name="BackgroundColor" value="0xff1c2b39" />
+
+    <!-- Splash Screen Settings for Android 11 and older -->
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="1000" />
+    <preference name="AutoHideSplashScreen" value="true" />
+    <preference name="FadeSplashScreen" value="true" />
+    <preference name="FadeSplashScreenDuration" value="250" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="SplashShowOnlyFirstTime" value="false" />
+
+    <!-- Android 12+ Window Splash Screen API: App Icon and Theme Background -->
+    <preference name="AndroidWindowSplashScreenAnimatedIcon" value="icon-512.png" />
+    <preference name="AndroidWindowSplashScreenBackground" value="#1C2B39" />
+
+    <!-- App Icon & Android Platform Configuration -->
+    <icon src="icon-512.png" />
+    <splash src="icon-512.png" />
+
+    <platform name="android">
+        <icon src="icon-512.png" density="ldpi" />
+        <icon src="icon-512.png" density="mdpi" />
+        <icon src="icon-512.png" density="hdpi" />
+        <icon src="icon-512.png" density="xhdpi" />
+        <icon src="icon-512.png" density="xxhdpi" />
+        <icon src="icon-512.png" density="xxxhdpi" />
+
+        <!-- Centered splash screen with icon-512.png across all densities -->
+        <splash src="icon-512.png" density="land-hdpi" />
+        <splash src="icon-512.png" density="land-ldpi" />
+        <splash src="icon-512.png" density="land-mdpi" />
+        <splash src="icon-512.png" density="land-xhdpi" />
+        <splash src="icon-512.png" density="land-xxhdpi" />
+        <splash src="icon-512.png" density="land-xxxhdpi" />
+        <splash src="icon-512.png" density="port-hdpi" />
+        <splash src="icon-512.png" density="port-ldpi" />
+        <splash src="icon-512.png" density="port-mdpi" />
+        <splash src="icon-512.png" density="port-xhdpi" />
+        <splash src="icon-512.png" density="port-xxhdpi" />
+        <splash src="icon-512.png" density="port-xxxhdpi" />
+
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="icon-512.png" />
+        <preference name="AndroidWindowSplashScreenBackground" value="#1C2B39" />
+        <preference name="SplashScreenDelay" value="1000" />
+        <preference name="AutoHideSplashScreen" value="true" />
+        <preference name="FadeSplashScreen" value="true" />
+        <preference name="FadeSplashScreenDuration" value="250" />
+        <preference name="ShowSplashScreenSpinner" value="false" />
+        <preference name="SplashMaintainAspectRatio" value="true" />
+    </platform>
+</widget>

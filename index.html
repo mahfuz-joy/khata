@@ -11,7 +11,7 @@
 <title>Khata — your money, plainly kept</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231C2B39'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23C99A3D' font-family='Georgia,serif'%3E৳%3C/text%3E%3C/svg%3E">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -19,8 +19,8 @@
     --paper:#FAF6EF;
     --paper-raised:#FFFFFF;
     --ink:#1C2B39;
-    --ink-soft:#5B6B78;
-    --ink-faint:#94A0AA;
+    --ink-soft:#435362;
+    --ink-faint:#556677;
     --teal:#2F6F5E;
     --teal-soft:#E7EFEB;
     --rust:#B54834;
@@ -37,12 +37,13 @@
     --font-display:'Fraunces',serif;
     --font-ui:'Inter',sans-serif;
   }
-  body.dark-mode{
+  /* Mode 2: Classic Navy Dark Theme */
+  body.theme-dark{
     --paper:#0f1720;
     --paper-raised:#18222d;
     --ink:#F3F6FA;
-    --ink-soft:#9FB0C2;
-    --ink-faint:#627488;
+    --ink-soft:#CBD5E1;
+    --ink-faint:#94A3B8;
     --teal:#43C39E;
     --teal-soft:#17332B;
     --rust:#FF6B52;
@@ -53,7 +54,26 @@
     --blue-soft:#1A365D;
     --purple:#B794F4;
     --purple-soft:#322659;
-    --line:#263546;
+    --line:#26374a;
+  }
+  /* Mode 3: Solid True AMOLED Pitch-Black Theme */
+  body.theme-amoled{
+    --paper:#000000;
+    --paper-raised:#121212;
+    --ink:#FFFFFF;
+    --ink-soft:#B4B4B8;
+    --ink-faint:#8E8E93;
+    --teal:#34D399;
+    --teal-soft:#072418;
+    --rust:#F87171;
+    --rust-soft:#2D0F0B;
+    --gold:#FBBF24;
+    --gold-soft:#2B1E05;
+    --blue:#60A5FA;
+    --blue-soft:#0E1F3B;
+    --purple:#C084FC;
+    --purple-soft:#240F3E;
+    --line:#222222;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -65,7 +85,8 @@
     justify-content:center;
     min-height:100vh;
   }
-  body.dark-mode{background:#070b10;}
+  body.theme-dark{background:#070b10;}
+  body.theme-amoled{background:#000000;}
   .app-shell{
     width:100%;
     max-width:460px;
@@ -76,6 +97,13 @@
     flex-direction:column;
     box-shadow:0 0 40px rgba(0,0,0,.15);
     overflow-x:hidden;
+  }
+  body.theme-dark .app-shell{
+    box-shadow:0 0 40px rgba(0,0,0,.6);
+  }
+  body.theme-amoled .app-shell{
+    background:#000000;
+    box-shadow:0 0 50px rgba(0,0,0,.85);
   }
   ::selection{background:var(--gold-soft);}
   .tabular{font-variant-numeric:tabular-nums;}
@@ -95,8 +123,9 @@
   }
   header.top .brand span{color:var(--gold);}
   header.top .tagline{
-    font-size:11px;
+    font-size:11.5px;
     color:var(--ink-faint);
+    font-weight:500;
   }
 
   #content{
@@ -106,45 +135,84 @@
     -webkit-overflow-scrolling:touch;
   }
 
+  /* Aesthetic Vintage Ledger Hero Card */
   .hero{
-    background:var(--ink);
-    color:var(--paper);
-    border-radius:var(--radius-card);
-    padding:22px;
-    margin-bottom:18px;
+    background: linear-gradient(135deg, #1C2B39 0%, #101B26 100%);
+    color: #FFFFFF;
+    border-radius: 20px;
+    padding: 22px 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  body.dark-mode .hero{
-    background:linear-gradient(135deg, #1A2836 0%, #111A23 100%);
-    border:1px solid var(--line);
+  body.theme-dark .hero{
+    background: linear-gradient(135deg, #1A2836 0%, #111A23 100%);
+    border: 1px solid #2a3d52;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.4);
+  }
+  body.theme-amoled .hero{
+    background: linear-gradient(145deg, #151515 0%, #090909 100%);
+    border: 1px solid #252525;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
   }
   .hero .label{
-    font-size:12px;
-    color:var(--ink-faint);
-    margin-bottom:4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #9DB2C6;
+    margin-bottom: 4px;
   }
+  body.theme-dark .hero .label{color: #94A3B8;}
+  body.theme-amoled .hero .label{color: #8C8C94;}
   .hero .balance{
-    font-family:var(--font-display);
-    font-size:36px;
-    font-weight:600;
-    line-height:1.1;
-    margin-bottom:16px;
-    color:var(--paper);
+    font-family: var(--font-display); /* Classic aesthetic serif numbers */
+    font-size: 38px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    color: #FFFFFF;
+    text-shadow: 0 2px 12px rgba(0,0,0,.35);
   }
-  body.dark-mode .hero .balance{color:#FFFFFF; text-shadow:0 2px 10px rgba(0,0,0,.3);}
   .hero .row{
-    display:flex;
-    justify-content:space-between;
-    border-top:1px solid rgba(255,255,255,.14);
-    padding-top:12px;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr 1fr;
+    gap: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 14px;
   }
-  .hero .row .item .k{font-size:11px;color:var(--ink-faint);margin-bottom:2px;}
-  .hero .row .item .v{font-family:var(--font-display);font-size:16px;font-weight:600;}
-  .hero .row .item.cash .v{color:var(--paper);}
-  body.dark-mode .hero .row .item.cash .v{color:#FFFFFF;}
-  .hero .row .item.in .v{color:#8FD8BE;}
-  body.dark-mode .hero .row .item.in .v{color:#43C39E;}
-  .hero .row .item.out .v{color:#E6A08F;}
-  body.dark-mode .hero .row .item.out .v{color:#FF8A75;}
+  .hero .row .item{
+    background: rgba(255, 255, 255, 0.06);
+    padding: 10px 6px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+  }
+  body.theme-dark .hero .row .item{
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  body.theme-amoled .hero .row .item{
+    background: #111111;
+    border: 1px solid #222222;
+  }
+  .hero .row .item .k{
+    font-size: 11px;
+    font-weight: 600;
+    color: #A6B9CC;
+    margin-bottom: 4px;
+  }
+  body.theme-dark .hero .row .item .k{color: #A0B3C6;}
+  body.theme-amoled .hero .row .item .k{color: #909096;}
+  .hero .row .item .v{
+    font-family: var(--font-display); /* Classic aesthetic serif numbers */
+    font-size: 16.5px;
+    font-weight: 600;
+  }
+  .hero .row .item.cash .v{color: #FFFFFF;}
+  .hero .row .item.in .v{color: #4ADE80;}
+  .hero .row .item.out .v{color: #FB7185;}
 
   /* AR & AP Summary Badge in Home */
   .debt-summary-row{
@@ -163,10 +231,33 @@
     gap:4px;
     cursor:pointer;
   }
-  .debt-pill .label{font-size:11px; font-weight:600; color:var(--ink-faint); display:flex; align-items:center; gap:5px;}
-  .debt-pill .val{font-family:var(--font-display); font-size:16px; font-weight:700;}
+  body.theme-dark .debt-pill{
+    background:#18222d;
+    border:1px solid #26374a;
+  }
+  body.theme-amoled .debt-pill{
+    background:#121212;
+    border:1px solid #222222;
+  }
+  .debt-pill .label{
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  body.theme-dark .debt-pill .label{color:#CBD5E1;}
+  body.theme-amoled .debt-pill .label{color:#B8B8BD;}
+  .debt-pill .val{
+    font-family:var(--font-display);
+    font-size:17.5px;
+    font-weight:600;
+  }
   .debt-pill.ar .val{color:var(--teal);}
+  body.dark-mode .debt-pill.ar .val{color:#38BDF8;}
   .debt-pill.ap .val{color:var(--rust);}
+  body.dark-mode .debt-pill.ap .val{color:#F87171;}
 
   .quick{
     display:grid;
@@ -191,12 +282,92 @@
     color:var(--ink);
     cursor:pointer;
   }
+  body.dark-mode .quick button, body.dark-mode .quick-extra button{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    color:var(--ink);
+  }
   .quick button:active, .quick-extra button:active{transform:scale(.97);}
   .quick button.income{color:var(--teal);}
+  body.dark-mode .quick button.income{color:#34D399;}
   .quick button.expense{color:var(--rust);}
+  body.dark-mode .quick button.expense{color:#F87171;}
   .quick button.transfer{color:var(--gold);}
+  body.dark-mode .quick button.transfer{color:#FBBF24;}
   .quick-extra button.lend{color:var(--blue); border-color:rgba(43,108,176,0.3);}
+  body.dark-mode .quick-extra button.lend{color:#60A5FA; border-color:#20324E;}
   .quick-extra button.borrow{color:var(--purple); border-color:rgba(107,70,193,0.3);}
+  body.dark-mode .quick-extra button.borrow{color:#C084FC; border-color:#351B55;}
+
+  /* Recurring bills reminder card */
+  .reminder{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius-card);
+    padding:16px 18px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.03);
+  }
+  body.theme-dark .reminder{
+    border:1px solid #26374a;
+    background:#18222d;
+  }
+  body.theme-amoled .reminder{
+    border:1px solid #222222;
+    background:#121212;
+  }
+  .reminder .h{
+    font-family:var(--font-display);
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  body.dark-mode .reminder .h{color:#FFFFFF;}
+  .reminder .line{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:11px 0;
+    border-top:1px solid var(--line);
+  }
+  body.theme-dark .reminder .line{border-top:1px solid #243447;}
+  body.theme-amoled .reminder .line{border-top:1px solid #1f1f1f;}
+  .reminder .line:first-of-type{border-top:none; padding-top:2px;}
+  .reminder .line:last-child{padding-bottom:2px;}
+  .reminder .line .bill-info{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    min-width:0;
+    flex:1;
+  }
+  .reminder .line .bill-name{
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  body.dark-mode .reminder .line .bill-name{color:#FFFFFF;}
+  .reminder .line .bill-sub{
+    font-size:12px;
+    color:var(--ink-faint);
+    font-weight:500;
+  }
+  .reminder .line .bill-amt{
+    font-family:var(--font-display);
+    font-size:16px;
+    font-weight:600;
+    color:var(--rust);
+    white-space:nowrap;
+    text-align:right;
+  }
 
   .sec-head{
     display:flex;
@@ -238,7 +409,7 @@
   .tx.borrow .dot{background:var(--purple-soft); color:var(--purple);}
   .tx .mid{flex:1; min-width:0;}
   .tx .mid .t1{font-size:14.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .tx .mid .t2{font-size:12px; color:var(--ink-faint); margin-top:1px;}
+  .tx .mid .t2{font-size:12px; color:var(--ink-faint); margin-top:2px; font-weight:500;}
   .tx .amt{font-family:var(--font-display); font-weight:600; font-size:15px; white-space:nowrap;}
   .tx.income .amt{color:var(--teal);}
   .tx.expense .amt{color:var(--rust);}
@@ -256,11 +427,20 @@
     justify-content:space-between;
     align-items:center;
   }
+  body.theme-dark .debt-card-row{
+    background:#18222d;
+    border:1px solid #26374a;
+  }
+  body.theme-amoled .debt-card-row{
+    background:#121212;
+    border:1px solid #222222;
+  }
   .debt-card-row.settled{opacity:0.6;}
   .debt-card-row .p-name{font-weight:700; font-size:14.5px; margin-bottom:2px;}
-  .debt-card-row .p-sub{font-size:11.5px; color:var(--ink-faint);}
+  body.dark-mode .debt-card-row .p-name{color:#FFFFFF;}
+  .debt-card-row .p-sub{font-size:11.5px; color:var(--ink-faint); font-weight:500;}
   .debt-card-row .right-side{text-align:right;}
-  .debt-card-row .p-amt{font-family:var(--font-display); font-weight:700; font-size:16px;}
+  .debt-card-row .p-amt{font-family:var(--font-display); font-weight:600; font-size:16px;}
   .debt-card-row .settle-btn{
     margin-top:4px;
     background:var(--ink);
@@ -272,7 +452,7 @@
     font-weight:700;
     cursor:pointer;
   }
-  body.dark-mode .debt-card-row .settle-btn{background:var(--gold); color:#111A23;}
+  body.dark-mode .debt-card-row .settle-btn{background:var(--gold); color:#111111;}
 
   .empty{
     text-align:center;
@@ -290,17 +470,44 @@
     border-radius:14px;
     padding:16px;
   }
+  body.theme-dark .acc-card{
+    background:#18222d;
+    border:1px solid #26374a;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  }
+  body.theme-amoled .acc-card{
+    background:#121212;
+    border:1px solid #222222;
+    box-shadow:0 2px 8px rgba(0,0,0,0.4);
+  }
   .acc-card .name{font-size:14px; font-weight:600;}
-  .acc-card .bal{font-family:var(--font-display); font-size:17px; font-weight:600;}
+  body.dark-mode .acc-card .name{color:#FFFFFF;}
+  .acc-card .bal{font-family:var(--font-display); font-size:17.5px; font-weight:600;}
+  body.dark-mode .acc-card .bal{color:#FFFFFF;}
+
   .acc-total{
     background:var(--ink); color:var(--paper);
     border-radius:14px; padding:16px;
     display:flex; justify-content:space-between; align-items:center;
     margin-top:4px;
   }
-  body.dark-mode .acc-total{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
-  .acc-total .name{font-size:13px; color:var(--ink-faint);}
-  .acc-total .bal{font-family:var(--font-display); font-size:19px; font-weight:700;}
+  body.theme-dark .acc-total{
+    background:linear-gradient(135deg, #1C2B39 0%, #131E29 100%);
+    color:#FFFFFF;
+    border:1px solid var(--gold);
+    box-shadow:0 4px 14px rgba(0,0,0,0.35);
+  }
+  body.theme-amoled .acc-total{
+    background:linear-gradient(135deg, #181818 0%, #0d0d0d 100%);
+    color:#FFFFFF;
+    border:1px solid var(--gold);
+    box-shadow:0 4px 14px rgba(0,0,0,0.5);
+  }
+  .acc-total .name{font-size:13px; color:rgba(255,255,255,0.85); font-weight:600;}
+  body.theme-dark .acc-total .name{color:#CBD5E1; font-weight:600;}
+  body.theme-amoled .acc-total .name{color:#B8B8BD; font-weight:600;}
+  .acc-total .bal{font-family:var(--font-display); font-size:20px; font-weight:700;}
+  body.dark-mode .acc-total .bal{color:var(--gold);}
 
   label.field{display:block; margin-bottom:16px;}
   label.field .fl{font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:6px; display:block;}
@@ -315,6 +522,11 @@
     color:var(--ink);
     appearance:none;
   }
+  body.dark-mode .field input, body.dark-mode .field select, body.dark-mode .field textarea{
+    background:var(--paper-raised);
+    border-color:var(--line);
+    color:var(--ink);
+  }
   .field input:focus, .field select:focus, .field textarea:focus{
     outline:2px solid var(--gold); outline-offset:1px;
   }
@@ -324,7 +536,7 @@
     font-family:var(--font-display); font-weight:600; color:var(--ink-soft);
     pointer-events:none;
   }
-  .amount-input input{padding-left:30px; font-family:var(--font-display); font-weight:600; font-size:19px;}
+  .amount-input input{padding-left:30px; font-family:var(--font-display); font-weight:600; font-size:20px;}
 
   .segmented{
     display:flex;
@@ -335,6 +547,8 @@
     margin-bottom:20px;
     overflow-x:auto;
   }
+  body.theme-dark .segmented{background:#0b121a; border-color:#26374a;}
+  body.theme-amoled .segmented{background:#0e0e0e; border-color:#222222;}
   .segmented button{
     flex:1;
     border:none;
@@ -349,7 +563,61 @@
     white-space:nowrap;
   }
   .segmented button.active{background:var(--ink); color:var(--paper);}
-  body.dark-mode .segmented button.active{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
+  body.theme-dark .segmented button.active{background:#26374a; color:#FFFFFF; border:1px solid #364b63;}
+  body.theme-amoled .segmented button.active{background:#222222; color:#FFFFFF; border:1px solid #333333;}
+
+  /* 3-Way Theme Segmented Control */
+  .theme-segmented{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+  }
+  .theme-segmented button{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:11px 4px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink-soft);
+    font-family:var(--font-ui);
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .18s ease;
+  }
+  .theme-segmented button.active{
+    border-color:var(--gold);
+    color:var(--ink);
+    background:var(--gold-soft);
+  }
+  body.theme-dark .theme-segmented button.active{
+    background:#203144;
+    color:#FFFFFF;
+  }
+  body.theme-amoled .theme-segmented button.active{
+    background:#1c1c1c;
+    color:#FFFFFF;
+  }
+  .theme-dot{
+    width:18px; height:18px;
+    border-radius:50%;
+    display:inline-block;
+  }
+  .normal-dot{
+    background:#FAF6EF;
+    border:1.5px solid #1C2B39;
+  }
+  .dark-dot{
+    background:#0f1720;
+    border:1.5px solid #63B3ED;
+  }
+  .amoled-dot{
+    background:#000000;
+    border:1.5px solid #FBBF24;
+  }
 
   .btn{
     display:block;
@@ -364,7 +632,8 @@
     cursor:pointer;
   }
   .btn.primary{background:var(--ink); color:var(--paper);}
-  body.dark-mode .btn.primary{background:var(--paper-raised); color:var(--ink); border:1px solid var(--line);}
+  body.theme-dark .btn.primary{background:#F3F6FA; color:#0f1720;}
+  body.theme-amoled .btn.primary{background:#FFFFFF; color:#000000;}
   .btn.primary:active{opacity:.85;}
   .btn.ghost{background:transparent; color:var(--ink-soft); margin-top:8px;}
   .btn.small{padding:8px 12px; font-size:12.5px; width:auto; border-radius:10px;}
@@ -373,10 +642,15 @@
     background:var(--paper-raised);
     color:var(--ink);
   }
-  body.dark-mode .btn.outline{
-    border-color:var(--line);
-    background:var(--paper-raised);
-    color:var(--ink);
+  body.theme-dark .btn.outline{
+    border-color:#384d66;
+    background:#16222F;
+    color:#F3F6FA;
+  }
+  body.theme-amoled .btn.outline{
+    border-color:#2b2b2b;
+    background:#161616;
+    color:#FFFFFF;
   }
   .err-msg{
     background:var(--rust-soft); color:var(--rust);
@@ -390,6 +664,7 @@
     border-radius:20px; padding:6px 12px; font-size:12px;
     display:flex; align-items:center; gap:6px;
   }
+  body.dark-mode .pill{background:#121212; border-color:#222222;}
   .pill .x{color:var(--rust); cursor:pointer; font-weight:700;}
   .row-inline{display:flex; gap:8px; margin-bottom:8px;}
   .row-inline input{flex:1;}
@@ -399,7 +674,7 @@
     padding:12px 0; border-bottom:1px solid var(--line);
   }
   .manage-row .t1{font-size:14px; font-weight:600;}
-  .manage-row .t2{font-size:12px; color:var(--ink-faint);}
+  .manage-row .t2{font-size:12px; color:var(--ink-faint); margin-top:1px; font-weight:500;}
   .manage-row .x{color:var(--rust); font-size:13px; font-weight:600; cursor:pointer;}
 
   /* Collapsible Accordions */
@@ -409,6 +684,10 @@
     border-radius:14px;
     margin-bottom:12px;
     overflow:hidden;
+  }
+  body.dark-mode .accordion-box{
+    background:#121212;
+    border:1px solid #222222;
   }
   .accordion-head{
     padding:15px 16px;
@@ -440,6 +719,7 @@
     padding:6px 16px 16px;
     border-top:1px solid var(--line);
   }
+  body.dark-mode .accordion-body{border-top:1px solid #1f1f1f;}
   .accordion-box.active .accordion-body{
     display:block;
   }
@@ -451,18 +731,21 @@
     background:var(--paper-raised); font-size:12.5px; font-weight:600; color:var(--ink-soft);
     cursor:pointer;
   }
+  body.dark-mode .period-tabs button{background:#121212; border-color:#222222; color:#B4B4B8;}
   .period-tabs button.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
-  body.dark-mode .period-tabs button.active{background:var(--paper-raised); color:var(--ink); border-color:var(--line);}
+  body.dark-mode .period-tabs button.active{background:#282828; color:#FFFFFF; border-color:#383838;}
   
   .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:22px;}
   .stat{background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:14px 10px;}
+  body.dark-mode .stat{background:#121212; border-color:#222222;}
   .stat .k{font-size:11px; color:var(--ink-faint); margin-bottom:4px;}
-  .stat .v{font-family:var(--font-display); font-weight:700; font-size:16px;}
+  .stat .v{font-family:var(--font-display); font-weight:600; font-size:16px;}
   .stat.in .v{color:var(--teal);} .stat.out .v{color:var(--rust);}
   .bar-row{margin-bottom:14px;}
   .bar-row .top{display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:5px;}
-  .bar-row .top .amt{font-weight:600;}
+  .bar-row .top .amt{font-family:var(--font-display); font-weight:600;}
   .bar-track{height:8px; background:var(--line); border-radius:6px; overflow:hidden;}
+  body.dark-mode .bar-track{background:#1f1f1f;}
   .bar-fill{height:100%; background:var(--rust); border-radius:6px;}
 
   nav.bottom{
@@ -477,6 +760,14 @@
     display:flex;
     padding:8px 6px calc(8px + env(safe-area-inset-bottom));
     z-index:90;
+  }
+  body.theme-dark nav.bottom{
+    background:#0d151e;
+    border-top:1px solid #26374a;
+  }
+  body.theme-amoled nav.bottom{
+    background:#0a0a0a;
+    border-top:1px solid #1f1f1f;
   }
   nav.bottom button{
     flex:1;
@@ -513,7 +804,7 @@
 
   .sheet-overlay{
     position:fixed; inset:0;
-    background:rgba(0,0,0,.6);
+    background:rgba(0,0,0,.7);
     z-index:96;
     display:none;
   }
@@ -530,16 +821,25 @@
     transition:transform .28s cubic-bezier(.2,.8,.2,1);
     z-index:97;
   }
+  body.theme-dark .sheet{
+    background:#0f1720;
+    border-top:1px solid #26374a;
+  }
+  body.theme-amoled .sheet{
+    background:#0d0d0d;
+    border-top:1px solid #242424;
+  }
   .sheet-overlay.show .sheet{transform:translate(-50%, 0);}
   .sheet .handle{width:38px; height:4px; background:var(--line); border-radius:3px; margin:0 auto 16px;}
+  body.dark-mode .sheet .handle{background:#2a2a2a;}
   .sheet h2{font-family:var(--font-display); font-size:19px; margin:0 0 18px;}
 
-  /* Developer modal overlay: fixed in screen center */
+  /* Developer modal overlay */
   .dev-modal{
     position:fixed !important;
     top:0; left:0; right:0; bottom:0;
     width:100vw; height:100vh;
-    background:rgba(0,0,0,.75);
+    background:rgba(0,0,0,.8);
     z-index:9999 !important;
     display:none;
     align-items:center;
@@ -556,7 +856,15 @@
     width:100%;
     max-width:340px;
     text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.4);
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+  }
+  body.theme-dark .dev-card{
+    background:#18222d;
+    border:1px solid #26374a;
+  }
+  body.theme-amoled .dev-card{
+    background:#121212;
+    border:1px solid #242424;
   }
   .dev-avatar{
     width:80px; height:80px;
@@ -579,6 +887,14 @@
   .dev-card .bio-box{
     text-align:left; background:var(--paper); border:1px solid var(--line);
     border-radius:12px; padding:12px; font-size:13px; margin-bottom:18px; color:var(--ink-soft);
+  }
+  body.theme-dark .dev-card .bio-box{
+    background:#0b121a;
+    border:1px solid #26374a;
+  }
+  body.theme-amoled .dev-card .bio-box{
+    background:#080808;
+    border:1px solid #222222;
   }
   .dev-card .bio-box p{margin:6px 0;}
   .dev-card .bio-box strong{color:var(--ink);}
@@ -646,7 +962,29 @@
   </div>
 </div>
 
+<!-- App Update Modal -->
+<div class="dev-modal" id="updateModal" onclick="if(event.target===this)closeUpdateModal()">
+  <div class="dev-card" style="max-width:360px;">
+    <div style="font-size:36px; margin-bottom:10px;">🚀</div>
+    <h3 style="font-family:var(--font-display); font-size:18px; margin:0 0 6px;">New Update Available!</h3>
+    <div style="display:inline-block; background:var(--teal-soft); color:var(--teal); font-weight:700; font-size:12.5px; padding:4px 12px; border-radius:20px; margin-bottom:14px;" id="modalUpdateTag"></div>
+    <div class="bio-box" style="max-height:160px; overflow-y:auto; font-size:12px; margin-bottom:18px; text-align:left;" id="modalUpdateNotes"></div>
+    <button class="btn primary" style="margin-bottom:8px;" id="modalDownloadBtn">⬇️ Download APK</button>
+    <button class="btn ghost" style="margin-top:0;" onclick="closeUpdateModal()">Later</button>
+  </div>
+</div>
+
 <script>
+const APP_VERSION = '1.0.0';
+const GITHUB_REPO = 'mahfuz-joy/khata';
+
+// Dismiss Cordova splash screen immediately once ready
+document.addEventListener('deviceready', () => {
+  if (window.navigator && window.navigator.splashscreen && typeof window.navigator.splashscreen.hide === 'function') {
+    window.navigator.splashscreen.hide();
+  }
+}, false);
+
 const DB = {
   get(key, fallback){
     try{ const v = localStorage.getItem('khata_'+key); return v ? JSON.parse(v) : fallback; }
@@ -664,21 +1002,39 @@ let driveAccessToken = null;
 let drivePendingAction = null;
 let driveAutoSync = DB.get('driveAutoSync', true);
 let driveStatus = DB.get('driveStatus', {lastSync:null});
-let darkModeEnabled = DB.get('darkMode', false);
 
-function applyTheme(){
-  if(darkModeEnabled){
-    document.body.classList.add('dark-mode');
-  } else {
-    document.body.classList.remove('dark-mode');
-  }
+// Theme management: 'normal' | 'dark' | 'amoled'
+let currentTheme = DB.get('theme', null);
+if (!currentTheme) {
+  const legacyDark = DB.get('darkMode', false);
+  currentTheme = legacyDark ? 'amoled' : 'normal';
 }
-applyTheme();
 
-function toggleDarkMode(checked){
-  darkModeEnabled = checked;
-  DB.set('darkMode', darkModeEnabled);
-  applyTheme();
+function applyTheme(theme){
+  document.body.classList.remove('theme-normal', 'theme-dark', 'theme-amoled', 'dark-mode');
+  if(theme === 'dark'){
+    document.body.classList.add('theme-dark', 'dark-mode');
+  } else if(theme === 'amoled'){
+    document.body.classList.add('theme-amoled', 'dark-mode');
+  } else {
+    document.body.classList.add('theme-normal');
+  }
+  currentTheme = theme;
+  DB.set('theme', theme);
+  DB.set('darkMode', theme !== 'normal');
+}
+applyTheme(currentTheme);
+
+function changeTheme(theme){
+  applyTheme(theme);
+  const label = document.getElementById('themeCurrentLabel');
+  if(label) label.textContent = theme === 'normal' ? 'Normal' : theme === 'dark' ? 'Navy Dark' : 'AMOLED';
+  const btns = document.querySelectorAll('.theme-segmented button');
+  if(btns.length === 3){
+    btns[0].classList.toggle('active', theme === 'normal');
+    btns[1].classList.toggle('active', theme === 'dark');
+    btns[2].classList.toggle('active', theme === 'amoled');
+  }
 }
 
 function openDevModal(){
@@ -686,6 +1042,160 @@ function openDevModal(){
 }
 function closeDevModal(){
   document.getElementById('devModal').classList.remove('show');
+}
+
+/* App Update & Version Checking */
+let isCheckingUpdate = false;
+let lastUpdateStatus = null;
+
+function compareVersions(v1, v2) {
+  if (!v1 || !v2) return 0;
+  const parse = v => String(v).replace(/^v/i, '').trim().split(/[.\-+]/).map(x => parseInt(x, 10) || 0);
+  const p1 = parse(v1);
+  const p2 = parse(v2);
+  const max = Math.max(p1.length, p2.length);
+  for (let i = 0; i < max; i++) {
+    const a = p1[i] || 0;
+    const b = p2[i] || 0;
+    if (a > b) return 1;
+    if (a < b) return -1;
+  }
+  return 0;
+}
+
+function openDownloadLink(url) {
+  if (!url) return;
+  if (window.cordova && window.cordova.InAppBrowser) {
+    window.cordova.InAppBrowser.open(url, '_system');
+  } else {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+}
+
+function openUpdateModal(release, downloadUrl, sizeText) {
+  const modal = document.getElementById('updateModal');
+  if (!modal) return;
+  const tag = release.tag_name || release.name || 'Latest';
+  const tagEl = document.getElementById('modalUpdateTag');
+  if (tagEl) tagEl.textContent = `Release ${tag}`;
+
+  const notesEl = document.getElementById('modalUpdateNotes');
+  if (notesEl) {
+    const rawBody = (release.body || 'New enhancements and improvements are available.').trim();
+    notesEl.innerHTML = `<div style="font-weight:600; margin-bottom:6px; color:var(--ink);">${escapeHtml(release.name || tag)}</div><div>${escapeHtml(rawBody).replace(/\n/g, '<br>')}</div>`;
+  }
+
+  const btn = document.getElementById('modalDownloadBtn');
+  if (btn) {
+    btn.textContent = `⬇️ Download APK${sizeText}`;
+    btn.onclick = () => openDownloadLink(downloadUrl);
+  }
+
+  modal.classList.add('show');
+}
+
+function closeUpdateModal() {
+  const modal = document.getElementById('updateModal');
+  if (modal) modal.classList.remove('show');
+}
+
+async function checkForUpdates() {
+  if (isCheckingUpdate) return;
+  isCheckingUpdate = true;
+
+  const btn = document.getElementById('btnCheckUpdate');
+  const statusEl = document.getElementById('updateStatusArea');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Checking...';
+  }
+  if (statusEl) {
+    statusEl.innerHTML = '<div style="color:var(--ink-soft); font-size:12px; padding:6px 0;">Connecting to GitHub Releases...</div>';
+  }
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases`, {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        lastUpdateStatus = { type: 'success', msg: `You are up to date! Khata v${APP_VERSION} is the latest version.` };
+        renderUpdateStatus();
+        return;
+      }
+      throw new Error(`GitHub API returned status ${res.status}`);
+    }
+
+    const releases = await res.json();
+    const valid = Array.isArray(releases) ? releases.filter(r => !r.draft) : [];
+
+    if (valid.length === 0) {
+      lastUpdateStatus = { type: 'success', msg: `You are up to date! Khata v${APP_VERSION} is the latest version.` };
+      renderUpdateStatus();
+      return;
+    }
+
+    const latest = valid[0];
+    const latestTag = latest.tag_name || latest.name || '';
+    const isNewer = compareVersions(latestTag, APP_VERSION) > 0;
+
+    if (isNewer) {
+      const apkAsset = (latest.assets || []).find(a => a.name && a.name.toLowerCase().endsWith('.apk'));
+      const downloadUrl = apkAsset ? apkAsset.browser_download_url : (latest.html_url || `https://github.com/${GITHUB_REPO}/releases`);
+      const sizeText = apkAsset && apkAsset.size ? ` (${(apkAsset.size / (1024 * 1024)).toFixed(1)} MB)` : '';
+
+      lastUpdateStatus = {
+        type: 'new_version',
+        latest,
+        downloadUrl,
+        sizeText
+      };
+      renderUpdateStatus();
+      openUpdateModal(latest, downloadUrl, sizeText);
+    } else {
+      lastUpdateStatus = { type: 'success', msg: `You are up to date! Khata v${APP_VERSION} is the latest version.` };
+      renderUpdateStatus();
+    }
+  } catch (err) {
+    console.error('Update check failed:', err);
+    let errMsg = 'Unable to check for updates. Check internet connection.';
+    if (window.location && window.location.protocol === 'file:') {
+      errMsg = 'Local file preview cannot access GitHub API. Works on hosted app and APK.';
+    }
+    lastUpdateStatus = { type: 'error', msg: errMsg };
+    renderUpdateStatus();
+  } finally {
+    isCheckingUpdate = false;
+    const btnDone = document.getElementById('btnCheckUpdate');
+    if (btnDone) {
+      btnDone.disabled = false;
+      btnDone.innerHTML = '<span>🔄</span> Check for Updates';
+    }
+  }
+}
+
+function renderUpdateStatus() {
+  const statusEl = document.getElementById('updateStatusArea');
+  if (!statusEl || !lastUpdateStatus) return;
+
+  if (lastUpdateStatus.type === 'new_version') {
+    const { latest, downloadUrl, sizeText } = lastUpdateStatus;
+    const tag = latest.tag_name || latest.name || 'New version';
+    statusEl.innerHTML = `
+      <div style="background:var(--teal-soft); border:1px solid var(--teal); border-radius:12px; padding:12px; margin-top:8px;">
+        <div style="font-weight:700; color:var(--teal); font-size:13px; margin-bottom:4px;">🎉 Update available: ${escapeHtml(tag)}</div>
+        <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">${escapeHtml(latest.name || 'New release')} is ready to download!</div>
+        <button class="btn primary small" style="width:100%; margin-bottom:6px;" onclick="openDownloadLink('${downloadUrl}')">
+          ⬇️ Download APK${sizeText}
+        </button>
+        <a href="${latest.html_url}" target="_blank" rel="noopener noreferrer" style="display:block; text-align:center; font-size:11.5px; color:var(--ink-soft); text-decoration:underline;">View release notes on GitHub</a>
+      </div>`;
+  } else if (lastUpdateStatus.type === 'success') {
+    statusEl.innerHTML = `<div style="background:var(--teal-soft); color:var(--teal); padding:10px 12px; border-radius:10px; font-weight:600; font-size:12px; margin-top:8px;">✓ ${escapeHtml(lastUpdateStatus.msg)}</div>`;
+  } else if (lastUpdateStatus.type === 'error') {
+    statusEl.innerHTML = `<div style="background:var(--rust-soft); color:var(--rust); padding:10px 12px; border-radius:10px; font-weight:600; font-size:12px; margin-top:8px;">⚠️ ${escapeHtml(lastUpdateStatus.msg)}</div>`;
+  }
 }
 
 function driveConfigured(){
@@ -949,12 +1459,21 @@ function renderHome(){
 
   let html = `
   <div class="hero">
-    <div class="label">Net Worth (Cash + Paona − Dena)</div>
+    <div class="label">Net Worth (Cash + Paona - Dena)</div>
     <div class="balance tabular">${fmt(netWorth)}</div>
     <div class="row">
-      <div class="item cash"><div class="k">Available Cash</div><div class="v tabular">${fmt(totalCash)}</div></div>
-      <div class="item in"><div class="k">Income</div><div class="v tabular">${fmt(T.income)}</div></div>
-      <div class="item out"><div class="k">Expense</div><div class="v tabular">${fmt(T.expense)}</div></div>
+      <div class="item cash">
+        <div class="k">Available Cash</div>
+        <div class="v tabular">${fmt(totalCash)}</div>
+      </div>
+      <div class="item in">
+        <div class="k">Income</div>
+        <div class="v tabular">${fmt(T.income)}</div>
+      </div>
+      <div class="item out">
+        <div class="k">Expense</div>
+        <div class="v tabular">${fmt(T.expense)}</div>
+      </div>
     </div>
   </div>
 
@@ -980,9 +1499,16 @@ function renderHome(){
   </div>`;
 
   if(dueRecurring.length){
-    html += `<div class="reminder"><div class="h">Recurring bills</div>`;
+    html += `<div class="reminder">
+      <div class="h">🔄 Recurring Bills</div>`;
     dueRecurring.forEach(r=>{
-      html += `<div class="line"><span>${escapeHtml(r.name)} · day ${r.day}</span><span>${fmt(r.amount)}</span></div>`;
+      html += `<div class="line">
+        <div class="bill-info">
+          <span class="bill-name">${escapeHtml(r.name)}</span>
+          <span class="bill-sub">Due on day ${r.day}${r.account ? ' · ' + escapeHtml(r.account) : ''}</span>
+        </div>
+        <span class="bill-amt tabular">${fmt(r.amount)}</span>
+      </div>`;
     });
     html += `</div>`;
   }
@@ -1057,16 +1583,13 @@ function editTransaction(id){
   const t = state.transactions.find(x => x.id === id);
   if(!t) return;
 
-  // Settle transactions cannot be edited directly; they represent history
   if(t.type === 'settle_lend' || t.type === 'settle_borrow'){
     alert('Settlement history entries cannot be edited. You can delete it or add a new transaction.');
     return;
   }
 
-  // Open corresponding sheet
   openAdd(t.type);
 
-  // Pre-fill fields
   if(document.getElementById('fAmount')) document.getElementById('fAmount').value = t.amount;
   if(document.getElementById('fDate')) document.getElementById('fDate').value = t.date;
   if(document.getElementById('fNote') && t.note) document.getElementById('fNote').value = t.note;
@@ -1084,12 +1607,10 @@ function editTransaction(id){
     document.getElementById('fAccount').value = t.account;
   }
 
-  // If editing an existing lend/borrow, sync/remove the original debt entry
   if(t.debtId){
     state.debts = state.debts.filter(d => d.id !== t.debtId);
   }
 
-  // Remove original transaction record so saving will create the updated one
   state.transactions = state.transactions.filter(x => x.id !== id);
   persist();
   render();
@@ -1098,7 +1619,6 @@ function editTransaction(id){
 function deleteTransaction(id){
   const t = state.transactions.find(x => x.id === id);
   if(t && t.debtId){
-    // If original lend/borrow transaction is deleted, remove corresponding debt tracker
     state.debts = state.debts.filter(d => d.id !== t.debtId);
   }
   state.transactions = state.transactions.filter(t => t.id !== id);
@@ -1260,10 +1780,32 @@ function renderSettings(){
     </button>
   </div>
 
-  <div class="accordion-box" style="margin-bottom:14px;">
-    <div class="manage-row" style="padding:14px 16px; border-bottom:none;">
-      <div class="t1">Dark mode</div>
-      <input type="checkbox" ${darkModeEnabled?'checked':''} onchange="toggleDarkMode(this.checked)">
+  <!-- App Theme Accordion -->
+  <div class="accordion-box" id="accTheme">
+    <div class="accordion-head" onclick="toggleAccordion('accTheme')">
+      <h4><span>🎨</span> App Theme</h4>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="themeCurrentLabel" style="font-size:12px; font-weight:700; color:var(--gold); text-transform:capitalize;">
+          ${currentTheme === 'normal' ? 'Normal' : currentTheme === 'dark' ? 'Navy Dark' : 'AMOLED'}
+        </span>
+        <span class="arrow">▼</span>
+      </div>
+    </div>
+    <div class="accordion-body" style="padding-top:12px;">
+      <div class="theme-segmented">
+        <button class="${currentTheme==='normal'?'active':''}" onclick="changeTheme('normal')">
+          <span class="theme-dot normal-dot"></span>
+          <span>Normal</span>
+        </button>
+        <button class="${currentTheme==='dark'?'active':''}" onclick="changeTheme('dark')">
+          <span class="theme-dot dark-dot"></span>
+          <span>Navy Dark</span>
+        </button>
+        <button class="${currentTheme==='amoled'?'active':''}" onclick="changeTheme('amoled')">
+          <span class="theme-dot amoled-dot"></span>
+          <span>AMOLED</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1362,7 +1904,7 @@ function renderSettings(){
       </div>
       <div style="display:flex; gap:8px; margin:8px 0 12px;">
         <button class="btn primary small" style="flex:1;" onclick="driveConnectClick()">Backup now</button>
-        <button class="btn small" style="flex:1; border:1px solid var(--line); background:var(--paper-raised);" onclick="driveRestoreClick()">Restore</button>
+        <button class="btn small outline" style="flex:1;" onclick="driveRestoreClick()">Restore</button>
       </div>
       <div class="manage-row" style="border-bottom:none; padding:8px 0;">
         <div class="t1">Auto-backup while app is open</div>
@@ -1371,9 +1913,52 @@ function renderSettings(){
     </div>
   </div>
 
+  <!-- App Updates & Version Accordion -->
+  <div class="accordion-box" id="accUpdates">
+    <div class="accordion-head" onclick="toggleAccordion('accUpdates')">
+      <h4>🚀 App Updates & Version</h4>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="manage-row" style="border-bottom:none; padding:10px 0 6px;">
+        <div>
+          <div class="t1">Khata Ledger</div>
+          <div class="t2">Installed Version: v${APP_VERSION}</div>
+        </div>
+        <span style="font-size:11px; background:var(--teal-soft); color:var(--teal); font-weight:700; padding:4px 8px; border-radius:8px;">Installed</span>
+      </div>
+      <div style="margin:8px 0 6px;">
+        <button class="btn primary small" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;" id="btnCheckUpdate" onclick="checkForUpdates()">
+          <span>🔄</span> Check for Updates
+        </button>
+      </div>
+      <div id="updateStatusArea" style="margin-top:6px;"></div>
+    </div>
+  </div>
+
   <div class="sec-head" style="margin-top:20px;"><h3>Your data</h3></div>
-  <div class="manage-row"><div class="t1">Export as JSON file</div><a onclick="exportData()" style="font-size:13px;font-weight:600;">Download</a></div>
-  <div class="manage-row"><div class="t1">Erase everything</div><a onclick="eraseAll()" style="font-size:13px;font-weight:600;color:var(--rust);">Erase</a></div>
+  <div class="manage-row">
+    <div>
+      <div class="t1">Export as JSON file</div>
+      <div class="t2">Backup or share your data</div>
+    </div>
+    <a onclick="exportData()" style="font-size:13px;font-weight:600;cursor:pointer;">Export</a>
+  </div>
+  <div class="manage-row">
+    <div>
+      <div class="t1">Import JSON file</div>
+      <div class="t2">Restore data from a JSON backup</div>
+    </div>
+    <a onclick="document.getElementById('importFileInput').click()" style="font-size:13px;font-weight:600;color:var(--teal);cursor:pointer;">Import</a>
+    <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="importData(event)">
+  </div>
+  <div class="manage-row">
+    <div>
+      <div class="t1">Erase everything</div>
+      <div class="t2">Permanently wipe all local records</div>
+    </div>
+    <a onclick="eraseAll()" style="font-size:13px;font-weight:600;color:var(--rust);cursor:pointer;">Erase</a>
+  </div>
   <div style="height:20px;"></div>`;
 
   return html;
@@ -1421,18 +2006,114 @@ function addRecurring(){
 }
 function removeRecurring(id){ state.recurring = state.recurring.filter(r=>r.id!==id); persist(); render(); }
 
-function exportData(){
-  const blob = new Blob([JSON.stringify({
-    transactions: state.transactions, categories: state.categories,
-    sources: state.sources, accounts: state.accounts, recurring: state.recurring,
-    debts: state.debts
-  }, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'khata-backup.json';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+async function exportData(){
+  const backup = {
+    transactions: state.transactions,
+    categories: state.categories,
+    sources: state.sources,
+    accounts: state.accounts,
+    recurring: state.recurring,
+    debts: state.debts,
+    version: APP_VERSION,
+    exportedAt: new Date().toISOString()
+  };
+  const jsonStr = JSON.stringify(backup, null, 2);
+  const filename = 'khata-backup.json';
+
+  if (navigator.share) {
+    try {
+      const file = new File([jsonStr], filename, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Khata Backup',
+          text: 'Khata Backup (' + todayISO() + ')'
+        });
+        return;
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      console.warn('Web Share failed, falling back to data URL download:', err);
+    }
+  }
+
+  try {
+    const dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonStr);
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      if (a.parentNode) a.parentNode.removeChild(a);
+    }, 1000);
+  } catch (err) {
+    console.error('Data URL export failed:', err);
+    alert('Unable to export backup: ' + err.message);
+  }
 }
+
+function importData(event){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+
+      const hasTransactions = Array.isArray(data.transactions);
+      const hasCategories = Array.isArray(data.categories);
+      const hasAccounts = Array.isArray(data.accounts);
+
+      if (!hasTransactions && !hasCategories && !hasAccounts) {
+        alert('Invalid backup file. The selected JSON file does not contain Khata transactions, accounts, or categories.');
+        event.target.value = '';
+        return;
+      }
+
+      const txCount = hasTransactions ? data.transactions.length : 0;
+      const accCount = hasAccounts ? data.accounts.length : 0;
+      const catCount = hasCategories ? data.categories.length : 0;
+
+      const confirmMsg = `Restore this backup?\n\n` +
+        `• Transactions: ${txCount}\n` +
+        `• Accounts: ${accCount}\n` +
+        `• Categories: ${catCount}\n\n` +
+        `WARNING: This will replace your current transactions and ledger records. Continue?`;
+
+      if (!confirm(confirmMsg)) {
+        event.target.value = '';
+        return;
+      }
+
+      if (hasTransactions) state.transactions = data.transactions;
+      if (hasCategories) state.categories = data.categories;
+      if (Array.isArray(data.sources)) state.sources = data.sources;
+      if (hasAccounts) state.accounts = data.accounts;
+      if (Array.isArray(data.recurring)) state.recurring = data.recurring;
+      if (Array.isArray(data.debts)) state.debts = data.debts;
+
+      persist();
+      render();
+      alert('Data imported successfully!');
+    } catch(err) {
+      console.error('Import parse error:', err);
+      alert('Failed to parse JSON file. Please ensure it is a valid Khata backup file.');
+    } finally {
+      event.target.value = '';
+    }
+  };
+
+  reader.onerror = function(){
+    alert('Error reading the selected file. Please try again.');
+    event.target.value = '';
+  };
+
+  reader.readAsText(file);
+}
+
 function eraseAll(){
   if(!confirm('This will permanently delete all records including transactions, accounts, receivables and payables. Continue?')) return;
   state.transactions = []; state.categories = DEFAULT_CATEGORIES.slice();
@@ -1449,7 +2130,10 @@ function render(){
   else if(state.tab==='history') content.innerHTML = renderHistory();
   else if(state.tab==='accounts') content.innerHTML = renderAccounts();
   else if(state.tab==='reports') content.innerHTML = renderReports();
-  else if(state.tab==='settings') content.innerHTML = renderSettings();
+  else if(state.tab==='settings'){
+    content.innerHTML = renderSettings();
+    renderUpdateStatus();
+  }
 
   document.querySelectorAll('nav.bottom button').forEach(b=>{
     b.classList.toggle('active', b.dataset.tab===state.tab);
