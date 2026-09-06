@@ -24,6 +24,17 @@ jobs:
       - name: Install Cordova
         run: npm install -g cordova
 
+      - name: Prepare www folder
+        run: |
+          mkdir -p www
+          rsync -a --exclude='.git' --exclude='.github' --exclude='www' \
+            --exclude='config.xml' --exclude='package.json' --exclude='package-lock.json' \
+            --exclude='.gitignore' --exclude='.monacaignore' --exclude='.nojekyll' \
+            --exclude='LICENSE' --exclude='build.json' --exclude='node_modules' \
+            ./ www/
+          echo "www folder now contains:"
+          ls -la www
+
       - name: Add Android platform
         run: cordova platform add android
 
