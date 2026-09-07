@@ -676,6 +676,47 @@
   .manage-row .t2{font-size:12px; color:var(--ink-faint); margin-top:1px; font-weight:500;}
   .manage-row .x{color:var(--rust); font-size:13px; font-weight:600; cursor:pointer;}
 
+  .data-action-row{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--line);
+  }
+  body.theme-dark .data-action-row{border-bottom:1px solid #1f1f1f;}
+  body.theme-amoled .data-action-row{border-bottom:1px solid #1a1a1a;}
+  .data-action-info .t1{font-size:14px; font-weight:600;}
+  body.dark-mode .data-action-info .t1{color:#FFFFFF;}
+  .data-action-info .t2{font-size:11.5px; color:var(--ink-faint); margin-top:1px; font-weight:500;}
+  .btn.danger{
+    border:1px solid var(--rust);
+    background:var(--rust-soft);
+    color:var(--rust);
+    flex-shrink:0;
+  }
+  body.theme-dark .btn.danger{background:#2A1512; border-color:#F87171;}
+  body.theme-amoled .btn.danger{background:#1f0d0b; border-color:#F87171;}
+
+  .feedback-card{
+    display:flex; align-items:center; gap:12px;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-top:14px;
+    cursor:pointer;
+  }
+  body.theme-dark .feedback-card{background:#18222d; border:1px solid #26374a;}
+  body.theme-amoled .feedback-card{background:#121212; border:1px solid #222222;}
+  .feedback-card:active{opacity:.85;}
+  .feedback-card .feedback-icon{
+    width:38px; height:38px; flex-shrink:0;
+    border-radius:10px;
+    background:var(--gold-soft); color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px;
+  }
+  .feedback-card .t1{font-size:14px; font-weight:600;}
+  body.dark-mode .feedback-card .t1{color:#FFFFFF;}
+  .feedback-card .t2{font-size:11.5px; color:var(--ink-faint); margin-top:1px; font-weight:500;}
+
   /* Collapsible Accordions */
   .accordion-box{
     background:var(--paper-raised);
@@ -973,9 +1014,22 @@
   </div>
 </div>
 
+<!-- Erase Confirmation Modal -->
+<div class="dev-modal" id="eraseModal" onclick="if(event.target===this)closeEraseModal()">
+  <div class="dev-card" style="max-width:340px;">
+    <div style="font-size:36px; margin-bottom:10px;">⚠️</div>
+    <h3 style="font-family:var(--font-display); font-size:18px; margin:0 0 8px;">Erase everything?</h3>
+    <div class="bio-box" style="font-size:13px; margin-bottom:18px; text-align:left; color:var(--ink-soft);">
+      This will permanently delete all your transactions, accounts, categories, and receivables/payables from this device. This cannot be undone.
+    </div>
+    <button class="btn danger" style="width:100%; margin-bottom:8px; border-radius:12px; padding:12px; font-weight:700; font-size:14px;" onclick="confirmErase()">Yes, delete everything</button>
+    <button class="btn ghost" style="margin-top:0;" onclick="closeEraseModal()">Cancel</button>
+  </div>
+</div>
+
 <script src="cordova.js"></script>
 <script>
-const APP_VERSION = '1.0.2';
+const APP_VERSION = '1.0.3';
 const GITHUB_REPO = 'mahfuz-joy/khata';
 
 // Dismiss Cordova splash screen immediately once ready
@@ -1145,7 +1199,7 @@ async function checkForUpdates() {
 
     if (isNewer) {
       const apkAsset = (latest.assets || []).find(a => a.name && a.name.toLowerCase().endsWith('.apk'));
-      const downloadUrl = apkAsset ? apkAsset.browser_download_url : (latest.html_url || `https://github.com/${GITHUB_REPO}/releases`);
+      const downloadUrl = `https://github.com/${GITHUB_REPO}/releases/latest/download/khata.apk`;
       const sizeText = apkAsset && apkAsset.size ? ` (${(apkAsset.size / (1024 * 1024)).toFixed(1)} MB)` : '';
 
       lastUpdateStatus = {
@@ -1929,34 +1983,54 @@ function renderSettings(){
     </div>
   </div>
 
-  <div class="sec-head" style="margin-top:20px;"><h3>Your data</h3></div>
-  <div class="manage-row">
-    <div>
-      <div class="t1">Export as JSON file</div>
-      <div class="t2">Backup or share your data</div>
+  <!-- Backup & Data Accordion -->
+  <div class="accordion-box" id="accData">
+    <div class="accordion-head" onclick="toggleAccordion('accData')">
+      <h4>🗄️ Backup &amp; Data</h4>
+      <span class="arrow">▼</span>
     </div>
-    <a onclick="exportData()" style="font-size:13px;font-weight:600;cursor:pointer;">Export</a>
-  </div>
-  <div class="manage-row">
-    <div>
-      <div class="t1">Import JSON file</div>
-      <div class="t2">Restore data from a JSON backup</div>
+    <div class="accordion-body" style="padding-top:12px;">
+      <div class="data-action-row">
+        <div class="data-action-info">
+          <div class="t1">Export as JSON file</div>
+          <div class="t2">Backup or share your data</div>
+        </div>
+        <button class="btn small outline" onclick="exportData()">Export</button>
+      </div>
+      <div class="data-action-row">
+        <div class="data-action-info">
+          <div class="t1">Import JSON file</div>
+          <div class="t2">Restore data from a JSON backup</div>
+        </div>
+        <button class="btn small outline" onclick="document.getElementById('importFileInput').click()">Import</button>
+        <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="importData(event)">
+      </div>
+      <div class="data-action-row" style="border-bottom:none;">
+        <div class="data-action-info">
+          <div class="t1">Erase everything</div>
+          <div class="t2">Permanently wipe all local records</div>
+        </div>
+        <button class="btn small danger" onclick="openEraseModal()">Erase</button>
+      </div>
     </div>
-    <a onclick="document.getElementById('importFileInput').click()" style="font-size:13px;font-weight:600;color:var(--teal);cursor:pointer;">Import</a>
-    <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="importData(event)">
   </div>
-  <div class="manage-row">
-    <div>
-      <div class="t1">Erase everything</div>
-      <div class="t2">Permanently wipe all local records</div>
+
+  <!-- Feedback -->
+  <div class="feedback-card" onclick="sendFeedback()">
+    <div class="feedback-icon">💬</div>
+    <div style="flex:1;">
+      <div class="t1">Send Feedback</div>
+      <div class="t2">Found a bug or have an idea? Email the developer</div>
     </div>
-    <a onclick="eraseAll()" style="font-size:13px;font-weight:600;color:var(--rust);cursor:pointer;">Erase</a>
+    <span style="font-size:18px; color:var(--ink-faint);">›</span>
   </div>
+
   <div style="height:20px;"></div>`;
 
   return html;
 }
 function escId(s){ return String(s).replace(/'/g,"\\'"); }
+
 
 function addCategory(){
   const el = document.getElementById('newCatInput');
@@ -1999,6 +2073,24 @@ function addRecurring(){
 }
 function removeRecurring(id){ state.recurring = state.recurring.filter(r=>r.id!==id); persist(); render(); }
 
+function writeBackupFileNative(jsonStr, filename){
+  return new Promise((resolve, reject) => {
+    if (!window.cordova || !window.resolveLocalFileSystemURL || !window.cordova.file) {
+      reject(new Error('native file plugin unavailable'));
+      return;
+    }
+    window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry){
+      dirEntry.getFile(filename, { create: true, exclusive: false }, function(fileEntry){
+        fileEntry.createWriter(function(writer){
+          writer.onwriteend = function(){ resolve(fileEntry.nativeURL || fileEntry.toURL()); };
+          writer.onerror = reject;
+          writer.write(new Blob([jsonStr], { type: 'application/json' }));
+        }, reject);
+      }, reject);
+    }, reject);
+  });
+}
+
 async function exportData(){
   const backup = {
     transactions: state.transactions,
@@ -2011,7 +2103,16 @@ async function exportData(){
     exportedAt: new Date().toISOString()
   };
   const jsonStr = JSON.stringify(backup, null, 2);
-  const filename = 'khata-backup.json';
+  const filename = 'khata-backup-' + todayISO() + '.json';
+
+  // Preferred path when running as an installed app: write the file directly to device storage.
+  try {
+    await writeBackupFileNative(jsonStr, filename);
+    alert('Backup saved as "' + filename + '".\n\nYou can find it with a file manager app under:\nAndroid/data/com.mahfuzjoy.khata/files/');
+    return;
+  } catch (err) {
+    console.warn('Native file export unavailable, trying other methods:', err);
+  }
 
   if (navigator.share) {
     try {
@@ -2107,12 +2208,25 @@ function importData(event){
   reader.readAsText(file);
 }
 
-function eraseAll(){
-  if(!confirm('This will permanently delete all records including transactions, accounts, receivables and payables. Continue?')) return;
+function openEraseModal(){
+  document.getElementById('eraseModal').classList.add('show');
+}
+function closeEraseModal(){
+  document.getElementById('eraseModal').classList.remove('show');
+}
+function confirmErase(){
   state.transactions = []; state.categories = DEFAULT_CATEGORIES.slice();
   state.sources = DEFAULT_SOURCES.slice(); state.accounts = DEFAULT_ACCOUNTS.slice();
   state.recurring = []; state.debts = [];
-  persist(); render();
+  persist();
+  closeEraseModal();
+  render();
+}
+
+function sendFeedback(){
+  const subject = encodeURIComponent('Khata App Feedback');
+  const body = encodeURIComponent('Hi Mahfuz,\n\n');
+  window.location.href = 'mailto:mahfuzalamjoy56@gmail.com?subject=' + subject + '&body=' + body;
 }
 
 function goTab(t){ state.tab = t; render(); }
