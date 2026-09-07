@@ -2,7 +2,7 @@
 <widget xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.mahfuzjoy.khata"
-        version="1.0.2">
+        version="1.0.3">
     <name>Khata</name>
     <description>Personal finance and debt manager</description>
     <author email="mahfuzalamjoy56@gmail.com" href="https://github.com/mahfuz-joy/khata">MD. MAHFUZ ALAM JOY</author>
@@ -74,4 +74,6 @@
     </platform>
 
     <plugin name="cordova-plugin-googleplus" spec="^8.5.2" />
+    <plugin name="cordova-plugin-file" spec="^8.1.3" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^6.0.0" />
 </widget>
