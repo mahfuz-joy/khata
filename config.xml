@@ -73,7 +73,9 @@
         <preference name="SplashMaintainAspectRatio" value="true" />
     </platform>
 
-    <plugin name="cordova-plugin-googleplus" spec="^8.5.2" />
+    <plugin name="cordova-plugin-googleplus" spec="^8.5.2">
+        <variable name="WEB_APPLICATION_CLIENT_ID" value="341416834173-h5o70osb7v3986bc2oqt9vakblbmcpk1.apps.googleusercontent.com" />
+    </plugin>
     <plugin name="cordova-plugin-file" spec="^8.1.3" />
     <plugin name="cordova-plugin-inappbrowser" spec="^6.0.0" />
 </widget>
