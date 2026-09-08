@@ -1513,8 +1513,11 @@ function debtTotals(){
 function accountBalances(){
   const bal = {};
   state.accounts.forEach(a=> bal[a]=0);
+  const today = todayISO();
   
   state.transactions.forEach(t=>{
+    if(t.date > today) return;
+
     if(t.type==='income'){ bal[t.account] = (bal[t.account]||0) + t.amount; }
     else if(t.type==='expense'){ bal[t.account] = (bal[t.account]||0) - t.amount; }
     else if(t.type==='transfer'){
