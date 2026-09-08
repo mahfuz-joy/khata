@@ -1,14 +1,42 @@
 name: Build Android APK
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Determine Version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            VERSION=$(echo "$TAG" | sed 's/^v//')
+          else
+            VERSION=$(grep 'id="com.mahfuzjoy.khata"' config.xml | sed -E 's/.*version="([^"]+)".*/\1/')
+          fi
+          echo "Extracted Version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Sync Version across files
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          echo "Updating version to $VERSION"
+
+          # Update version in config.xml
+          sed -i -E "s/version=\"[0-9]+\.[0-9]+\.[0-9]+\"/version=\"$VERSION\"/g" config.xml
+
+          # Update version in index.html
+          sed -i -E "s/const APP_VERSION = '[0-9]+\.[0-9]+\.[0-9]+';/const APP_VERSION = '$VERSION';/g" index.html
+          sed -i -E "s/Installed Version: v[0-9]+\.[0-9]+\.[0-9]+/Installed Version: v$VERSION/g" index.html
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -32,14 +60,16 @@ jobs:
             --exclude='.gitignore' --exclude='.monacaignore' --exclude='.nojekyll' \
             --exclude='LICENSE' --exclude='build.json' --exclude='node_modules' \
             ./ www/
-          echo "www folder now contains:"
-          ls -la www
+          echo "www folder prepared successfully."
 
       - name: Add Android platform
         run: cordova platform add android
 
       - name: Add plugins
-        run: cordova plugin add cordova-plugin-googleplus
+        run: |
+          cordova plugin add cordova-plugin-googleplus --variable WEB_APPLICATION_CLIENT_ID="341416834173-h5o70osb7v3986bc2oqt9vakblbmcpk1.apps.googleusercontent.com"
+          cordova plugin add cordova-plugin-file
+          cordova plugin add cordova-plugin-inappbrowser
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
@@ -62,8 +92,22 @@ jobs:
       - name: Build release APK
         run: cordova build android --release --buildConfig=build-release.json -- --packageType=apk
 
-      - name: Upload APK
+      - name: Prepare APK Asset
+        run: |
+          mkdir -p release-assets
+          cp platforms/android/app/build/outputs/apk/release/*.apk release-assets/khata.apk
+          ls -la release-assets/
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: khata-release-apk
-          path: platforms/android/app/build/outputs/apk/release/*.apk
+          name: khata-v${{ steps.get_version.outputs.version }}-apk
+          path: release-assets/khata.apk
+
+      - name: Upload to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/khata.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
