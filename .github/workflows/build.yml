@@ -29,14 +29,26 @@ jobs:
       - name: Sync Version across files
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          echo "Updating version to $VERSION"
+          VERSION_CODE="${{ github.run_number }}"
+          echo "Updating version to $VERSION (versionCode $VERSION_CODE)"
 
           # Update version in config.xml
           sed -i -E "s/version=\"[0-9]+\.[0-9]+\.[0-9]+\"/version=\"$VERSION\"/g" config.xml
 
+          # Update or insert android-versionCode in config.xml (must strictly increase on every release,
+          # otherwise Android will refuse the update / show a package conflict error)
+          if grep -q 'android-versionCode=' config.xml; then
+            sed -i -E "s/android-versionCode=\"[0-9]+\"/android-versionCode=\"$VERSION_CODE\"/g" config.xml
+          else
+            sed -i -E "s/(version=\"[0-9]+\.[0-9]+\.[0-9]+\")/\1 android-versionCode=\"$VERSION_CODE\"/" config.xml
+          fi
+
           # Update version in index.html
           sed -i -E "s/const APP_VERSION = '[0-9]+\.[0-9]+\.[0-9]+';/const APP_VERSION = '$VERSION';/g" index.html
           sed -i -E "s/Installed Version: v[0-9]+\.[0-9]+\.[0-9]+/Installed Version: v$VERSION/g" index.html
+
+          echo "Final config.xml version line:"
+          grep '<widget' -A2 config.xml | head -3
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
