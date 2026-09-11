@@ -1089,6 +1089,21 @@
   </div>
 </div>
 
+<!-- Partial/Full Settle Modal -->
+<div class="dev-modal" id="settleModal" onclick="if(event.target===this)closeSettleModal()">
+  <div class="dev-card" style="max-width:340px; text-align:left;">
+    <h3 id="settleModalTitle" style="font-family:var(--font-display); font-size:18px; margin:0 0 8px; text-align:left;">Settle</h3>
+    <div id="settleModalDesc" style="font-size:13px; color:var(--ink-soft); margin-bottom:14px;"></div>
+    <div class="err-msg" id="settleModalErr" style="display:none;"></div>
+    <label class="field" style="margin-bottom:18px;">
+      <span class="fl">Amount received/paid</span>
+      <div class="amount-input"><span class="sym">৳</span><input id="settleAmountInput" type="number" inputmode="decimal" placeholder="0"></div>
+    </label>
+    <button class="btn primary" id="settleConfirmBtn" style="width:100%; margin-bottom:8px;" onclick="confirmSettleAmount()">Confirm</button>
+    <button class="btn ghost" style="margin-top:0;" onclick="closeSettleModal()">Cancel</button>
+  </div>
+</div>
+
 <script src="cordova.js"></script>
 <script>
 const APP_VERSION = '1.0.5';
@@ -1490,11 +1505,30 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 
 function totals(){
   let income=0, expense=0;
+  const today = todayISO();
   state.transactions.forEach(t=>{
+    if(t.date > today) return; // future-dated items don't count as realized income/expense yet
     if(t.type==='income') income += t.amount;
     else if(t.type==='expense') expense += t.amount;
   });
   return {income, expense, balance: income-expense};
+}
+
+// Net effect of all future-dated (not yet happened) transactions on net worth.
+// Income/lend-collections increase future net worth, expenses/borrow-payments decrease it.
+function futureNetWorthImpact(){
+  const today = todayISO();
+  let impact = 0;
+  state.transactions.forEach(t=>{
+    if(t.date <= today) return;
+    if(t.type==='income') impact += t.amount;
+    else if(t.type==='expense') impact -= t.amount;
+    else if(t.type==='settle_lend') impact += t.amount;
+    else if(t.type==='settle_borrow') impact -= t.amount;
+    // transfer, lend, borrow: these move money between your own accounts/debts,
+    // they don't change your overall net worth even when dated in the future.
+  });
+  return impact;
 }
 
 function debtTotals(){
@@ -1503,8 +1537,9 @@ function debtTotals(){
 
   state.debts.forEach(d=>{
     if(!d.settled){
-      if(d.type === 'lend') receivable += d.amount;
-      else if(d.type === 'borrow') payable += d.amount;
+      const remaining = Math.max(0, d.amount - (d.paidAmount || 0));
+      if(d.type === 'lend') receivable += remaining;
+      else if(d.type === 'borrow') payable += remaining;
     }
   });
   return {receivable, payable, netReceivable: receivable - payable};
@@ -1583,7 +1618,8 @@ function renderHome(){
   const D = debtTotals();
   const accBal = accountBalances();
   const totalCash = Object.values(accBal).reduce((a,b)=>a+b,0);
-  const netWorth = totalCash + D.netReceivable;
+  const futureImpact = futureNetWorthImpact();
+  const netWorth = totalCash + D.netReceivable + futureImpact;
 
   const recent = sortedTransactions().slice(0,6);
   const dueRecurring = state.recurring;
@@ -1592,6 +1628,7 @@ function renderHome(){
   <div class="hero">
     <div class="label">Net Worth (Cash + Paona - Dena)</div>
     <div class="balance tabular">${fmt(netWorth)}</div>
+    ${futureImpact !== 0 ? `<div style="font-size:11.5px; color:#9DB2C6; margin-top:-10px; margin-bottom:14px;">Includes ${futureImpact > 0 ? '+' : ''}${fmt(futureImpact)} from upcoming dated entries</div>` : ''}
     <div class="row">
       <div class="item cash">
         <div class="k">Available Cash</div>
@@ -1790,15 +1827,17 @@ function renderAccounts(){
     html += emptyState('No pending receivables', 'Nobody owes you money right now.');
   } else {
     arList.forEach(d => {
+      const remaining = debtRemaining(d);
+      const paid = d.paidAmount || 0;
       html += `
         <div class="debt-card-row">
           <div>
             <div class="p-name">${escapeHtml(d.person)}</div>
-            <div class="p-sub">${fmtDate(d.date)} · ${d.account}</div>
+            <div class="p-sub">${fmtDate(d.date)} · ${d.account}${paid > 0 ? ` · ${fmt(paid)} collected` : ''}</div>
           </div>
           <div class="right-side">
-            <div class="p-amt tabular" style="color:var(--blue);">${fmt(d.amount)}</div>
-            <button class="settle-btn" onclick="settleDebt('${d.id}')">Collect ✓</button>
+            <div class="p-amt tabular" style="color:var(--blue);">${fmt(remaining)}</div>
+            <button class="settle-btn" onclick="openSettleModal('${d.id}')">Collect ✓</button>
           </div>
         </div>
       `;
@@ -1811,15 +1850,17 @@ function renderAccounts(){
     html += emptyState('No pending payables', 'You do not owe money to anyone.');
   } else {
     apList.forEach(d => {
+      const remaining = debtRemaining(d);
+      const paid = d.paidAmount || 0;
       html += `
         <div class="debt-card-row">
           <div>
             <div class="p-name">${escapeHtml(d.person)}</div>
-            <div class="p-sub">${fmtDate(d.date)} · ${d.account}</div>
+            <div class="p-sub">${fmtDate(d.date)} · ${d.account}${paid > 0 ? ` · ${fmt(paid)} paid back` : ''}</div>
           </div>
           <div class="right-side">
-            <div class="p-amt tabular" style="color:var(--purple);">${fmt(d.amount)}</div>
-            <button class="settle-btn" onclick="settleDebt('${d.id}')">Pay Back ✓</button>
+            <div class="p-amt tabular" style="color:var(--purple);">${fmt(remaining)}</div>
+            <button class="settle-btn" onclick="openSettleModal('${d.id}')">Pay Back ✓</button>
           </div>
         </div>
       `;
@@ -1829,31 +1870,85 @@ function renderAccounts(){
   return html;
 }
 
-function settleDebt(debtId){
+function debtRemaining(d){
+  return Math.max(0, d.amount - (d.paidAmount || 0));
+}
+
+let settleDebtId = null;
+
+function openSettleModal(debtId){
   const d = state.debts.find(x => x.id === debtId);
   if(!d) return;
+  settleDebtId = debtId;
 
-  const actionText = d.type === 'lend' 
-    ? `Have you collected ${fmt(d.amount)} from ${d.person}? This will add the cash back into ${d.account}.`
-    : `Have you paid back ${fmt(d.amount)} to ${d.person}? This will deduct the cash from ${d.account}.`;
+  const remaining = debtRemaining(d);
+  const isLend = d.type === 'lend';
+  const modal = document.getElementById('settleModal');
+  const title = document.getElementById('settleModalTitle');
+  const desc = document.getElementById('settleModalDesc');
+  const input = document.getElementById('settleAmountInput');
+  const btn = document.getElementById('settleConfirmBtn');
+  const err = document.getElementById('settleModalErr');
 
-  if(!confirm(actionText)) return;
+  title.textContent = isLend ? `Collect from ${d.person}` : `Pay back ${d.person}`;
+  desc.textContent = isLend
+    ? `Remaining owed to you: ${fmt(remaining)}. Enter how much you actually received (partial amounts are fine).`
+    : `Remaining you owe: ${fmt(remaining)}. Enter how much you actually paid back (partial amounts are fine).`;
+  input.value = remaining;
+  input.max = remaining;
+  err.style.display = 'none';
+  btn.textContent = isLend ? 'Confirm collected' : 'Confirm paid back';
 
-  d.settled = true;
-  d.settledDate = todayISO();
+  modal.classList.add('show');
+}
+
+function closeSettleModal(){
+  document.getElementById('settleModal').classList.remove('show');
+  settleDebtId = null;
+}
+
+function confirmSettleAmount(){
+  const d = state.debts.find(x => x.id === settleDebtId);
+  if(!d) return;
+
+  const input = document.getElementById('settleAmountInput');
+  const err = document.getElementById('settleModalErr');
+  const amt = parseFloat(input.value);
+  const remaining = debtRemaining(d);
+
+  if(!amt || amt <= 0){
+    err.textContent = 'Enter an amount greater than zero.';
+    err.style.display = 'block';
+    return;
+  }
+  if(amt > remaining){
+    err.textContent = `That's more than the remaining ${fmt(remaining)}. Enter ${fmt(remaining)} or less.`;
+    err.style.display = 'block';
+    return;
+  }
+
+  d.paidAmount = (d.paidAmount || 0) + amt;
+  const isFullySettled = debtRemaining(d) <= 0;
+  if(isFullySettled){
+    d.settled = true;
+    d.settledDate = todayISO();
+  }
 
   state.transactions.push({
     id: uid(),
     type: d.type === 'lend' ? 'settle_lend' : 'settle_borrow',
-    amount: d.amount,
+    amount: amt,
     person: d.person,
     account: d.account,
     date: todayISO(),
-    note: `Settled ${d.type === 'lend' ? 'Paona' : 'Dena'}`,
+    note: isFullySettled
+      ? `Settled ${d.type === 'lend' ? 'Paona' : 'Dena'} (final payment)`
+      : `Partial ${d.type === 'lend' ? 'collection' : 'payment'} — ${fmt(debtRemaining(d))} still remaining`,
     ts: Date.now()
   });
 
   persist();
+  closeSettleModal();
   render();
 }
 
@@ -2501,6 +2596,44 @@ function saveTransaction(){
 }
 
 render();
+
+// --- Android hardware/gesture back button handling ---
+// Order of priority: close an open modal/sheet first, then go to Home tab,
+// and only exit the app if we're already on Home with nothing open.
+function isAnyOverlayOpen(){
+  const overlayIds = ['sheetOverlay', 'devModal', 'updateModal', 'eraseModal', 'settleModal'];
+  return overlayIds.some(id => {
+    const el = document.getElementById(id);
+    return el && el.classList.contains('show');
+  });
+}
+function closeAnyOpenOverlay(){
+  if(document.getElementById('sheetOverlay').classList.contains('show')) { closeSheet(); return; }
+  if(document.getElementById('settleModal').classList.contains('show')) { closeSettleModal(); return; }
+  if(document.getElementById('devModal').classList.contains('show')) { closeDevModal(); return; }
+  if(document.getElementById('updateModal').classList.contains('show')) { closeUpdateModal(); return; }
+  if(document.getElementById('eraseModal').classList.contains('show')) { closeEraseModal(); return; }
+}
+function handleBackButton(e){
+  if(isAnyOverlayOpen()){
+    if(e && e.preventDefault) e.preventDefault();
+    closeAnyOpenOverlay();
+    return;
+  }
+  if(state.tab !== 'home'){
+    if(e && e.preventDefault) e.preventDefault();
+    goTab('home');
+    return;
+  }
+  // Already on Home with nothing open: let the default behavior exit the app,
+  // just like every other Android app.
+  if(window.navigator && window.navigator.app && typeof window.navigator.app.exitApp === 'function'){
+    window.navigator.app.exitApp();
+  }
+}
+document.addEventListener('deviceready', () => {
+  document.addEventListener('backbutton', handleBackButton, false);
+}, false);
 </script>
 <script>
 if ('serviceWorker' in navigator) {
