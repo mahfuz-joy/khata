@@ -2,7 +2,8 @@
 <widget xmlns="http://www.w3.org/ns/widgets"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.mahfuzjoy.khata"
-        version="1.0.5">
+        version="1.0.5"
+        android-versionCode="10005">
     <name>Khata</name>
     <description>Personal finance and debt manager</description>
     <author email="mahfuzalamjoy56@gmail.com" href="https://github.com/mahfuz-joy/khata">MD. MAHFUZ ALAM JOY</author>
