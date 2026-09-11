@@ -1104,6 +1104,19 @@
   </div>
 </div>
 
+<!-- Opening Balance Setup Modal -->
+<div class="dev-modal" id="openingBalanceModal" onclick="if(event.target===this)closeOpeningBalanceSetup()">
+  <div class="dev-card" style="max-width:380px; text-align:left; max-height:82vh; display:flex; flex-direction:column;">
+    <h3 style="font-family:var(--font-display); font-size:18px; margin:0 0 6px; text-align:left;">Set starting balances</h3>
+    <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;">
+      Enter how much is currently in each account, right now, before you started using Khata. Leave anything at 0 if it doesn't apply.
+    </div>
+    <div id="openingBalanceFields" style="overflow-y:auto; flex:1; padding-right:2px; margin-bottom:14px;"></div>
+    <button class="btn primary" style="width:100%; margin-bottom:8px;" onclick="saveOpeningBalances()">Save</button>
+    <button class="btn ghost" style="margin-top:0;" onclick="closeOpeningBalanceSetup()">Cancel</button>
+  </div>
+</div>
+
 <script src="cordova.js"></script>
 <script>
 const APP_VERSION = '1.0.5';
@@ -1363,7 +1376,7 @@ async function driveBackupNow(){
     const payload = JSON.stringify({
       transactions: state.transactions, categories: state.categories,
       sources: state.sources, accounts: state.accounts, recurring: state.recurring,
-      debts: state.debts
+      debts: state.debts, openingBalances: state.openingBalances
     });
     const metadata = {name: DRIVE_FILENAME, mimeType:'application/json'};
     if(!file) metadata.parents = ['appDataFolder'];
@@ -1415,6 +1428,7 @@ async function driveRestoreNow(){
     state.accounts = data.accounts || DEFAULT_ACCOUNTS.slice();
     state.recurring = data.recurring || [];
     state.debts = data.debts || [];
+    state.openingBalances = data.openingBalances || {};
     persist(false);
     setSyncMsg('Restored ✓');
     render();
@@ -1473,8 +1487,13 @@ let state = {
   sources: DB.get('sources', DEFAULT_SOURCES.slice()),
   accounts: DB.get('accounts', DEFAULT_ACCOUNTS.slice()),
   recurring: DB.get('recurring', []),
-  debts: DB.get('debts', [])
+  debts: DB.get('debts', []),
+  openingBalances: DB.get('openingBalances', {})
 };
+
+// Whether the user has already been shown (and acted on, or skipped) the
+// first-time opening balance setup prompt on the home screen.
+let hasSeenOpeningSetup = DB.get('hasSeenOpeningSetup', false);
 
 function persist(triggerSync){
   DB.set('transactions', state.transactions);
@@ -1483,6 +1502,7 @@ function persist(triggerSync){
   DB.set('accounts', state.accounts);
   DB.set('recurring', state.recurring);
   DB.set('debts', state.debts);
+  DB.set('openingBalances', state.openingBalances);
   if(triggerSync !== false && driveAutoSync && driveAccessToken){
     driveBackupNow();
   }
@@ -1547,7 +1567,7 @@ function debtTotals(){
 
 function accountBalances(){
   const bal = {};
-  state.accounts.forEach(a=> bal[a]=0);
+  state.accounts.forEach(a=> bal[a] = state.openingBalances[a] || 0);
   const today = todayISO();
   
   state.transactions.forEach(t=>{
@@ -1624,7 +1644,24 @@ function renderHome(){
   const recent = sortedTransactions().slice(0,6);
   const dueRecurring = state.recurring;
 
-  let html = `
+  let html = '';
+
+  if(!hasSeenOpeningSetup){
+    html += `
+    <div style="background:var(--gold-soft); border:1px solid var(--gold); border-radius:14px; padding:14px 16px; margin-bottom:16px; display:flex; align-items:center; gap:12px;">
+      <div style="font-size:22px;">👋</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display); font-size:14.5px; font-weight:600; color:var(--ink); margin-bottom:2px;">New here? Set your starting balances</div>
+        <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">If you already have money in Cash, bKash, or other accounts, tell Khata so your balances start off correct.</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn primary small" onclick="openOpeningBalanceSetup()">Set balances</button>
+          <button class="btn ghost small" style="margin-top:0;" onclick="dismissOpeningSetup()">Skip</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  html += `
   <div class="hero">
     <div class="label">Net Worth (Cash + Paona - Dena)</div>
     <div class="balance tabular">${fmt(netWorth)}</div>
@@ -1952,6 +1989,54 @@ function confirmSettleAmount(){
   render();
 }
 
+// --- Opening balances (starting cash in each account before using Khata) ---
+
+function dismissOpeningSetup(){
+  hasSeenOpeningSetup = true;
+  DB.set('hasSeenOpeningSetup', true);
+  render();
+}
+
+function openOpeningBalanceSetup(){
+  const fieldsEl = document.getElementById('openingBalanceFields');
+  fieldsEl.innerHTML = state.accounts.map(a => {
+    const current = state.openingBalances[a] || 0;
+    return `
+      <label class="field">
+        <span class="fl">${escapeHtml(a)}</span>
+        <div class="amount-input"><span class="sym">৳</span><input class="opening-bal-input" data-account="${escId(a)}" type="number" inputmode="decimal" value="${current || ''}" placeholder="0"></div>
+      </label>`;
+  }).join('');
+  document.getElementById('openingBalanceModal').classList.add('show');
+}
+
+function closeOpeningBalanceSetup(){
+  document.getElementById('openingBalanceModal').classList.remove('show');
+  // Opening this from the first-time card counts as "seen", even if closed without saving,
+  // so it doesn't keep reappearing on every home screen visit.
+  if(!hasSeenOpeningSetup){
+    hasSeenOpeningSetup = true;
+    DB.set('hasSeenOpeningSetup', true);
+    render();
+  }
+}
+
+function saveOpeningBalances(){
+  const inputs = document.querySelectorAll('#openingBalanceFields .opening-bal-input');
+  const updated = {};
+  inputs.forEach(inp => {
+    const account = inp.dataset.account;
+    const val = parseFloat(inp.value);
+    updated[account] = (!isNaN(val) && val !== 0) ? val : 0;
+  });
+  state.openingBalances = updated;
+  hasSeenOpeningSetup = true;
+  DB.set('hasSeenOpeningSetup', true);
+  persist();
+  document.getElementById('openingBalanceModal').classList.remove('show');
+  render();
+}
+
 function openDebtList(type){
   goTab('accounts');
 }
@@ -2184,6 +2269,13 @@ function renderSettings(){
         <button class="btn small outline" onclick="document.getElementById('importFileInput').click()">Import</button>
         <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="importData(event)">
       </div>
+      <div class="data-action-row">
+        <div class="data-action-info">
+          <div class="t1">Opening balances</div>
+          <div class="t2">Set or adjust each account's starting amount</div>
+        </div>
+        <button class="btn small outline" onclick="openOpeningBalanceSetup()">Edit</button>
+      </div>
       <div class="data-action-row" style="border-bottom:none;">
         <div class="data-action-info">
           <div class="t1">Erase everything</div>
@@ -2236,7 +2328,11 @@ function addAccount(){
   if(!state.accounts.includes(v)) state.accounts.push(v);
   persist(); render();
 }
-function removeAccount(a){ state.accounts = state.accounts.filter(x=>x!==a); persist(); render(); }
+function removeAccount(a){
+  state.accounts = state.accounts.filter(x=>x!==a);
+  delete state.openingBalances[a];
+  persist(); render();
+}
 
 function addRecurring(){
   const name = document.getElementById('recName').value.trim();
@@ -2278,6 +2374,7 @@ async function exportData(){
     accounts: state.accounts,
     recurring: state.recurring,
     debts: state.debts,
+    openingBalances: state.openingBalances,
     version: APP_VERSION,
     exportedAt: new Date().toISOString()
   };
@@ -2367,6 +2464,7 @@ function importData(event){
       if (hasAccounts) state.accounts = data.accounts;
       if (Array.isArray(data.recurring)) state.recurring = data.recurring;
       if (Array.isArray(data.debts)) state.debts = data.debts;
+      if (data.openingBalances && typeof data.openingBalances === 'object') state.openingBalances = data.openingBalances;
 
       persist();
       render();
@@ -2396,7 +2494,9 @@ function closeEraseModal(){
 function confirmErase(){
   state.transactions = []; state.categories = DEFAULT_CATEGORIES.slice();
   state.sources = DEFAULT_SOURCES.slice(); state.accounts = DEFAULT_ACCOUNTS.slice();
-  state.recurring = []; state.debts = [];
+  state.recurring = []; state.debts = []; state.openingBalances = {};
+  hasSeenOpeningSetup = false;
+  DB.set('hasSeenOpeningSetup', false);
   persist();
   closeEraseModal();
   render();
@@ -2601,7 +2701,7 @@ render();
 // Order of priority: close an open modal/sheet first, then go to Home tab,
 // and only exit the app if we're already on Home with nothing open.
 function isAnyOverlayOpen(){
-  const overlayIds = ['sheetOverlay', 'devModal', 'updateModal', 'eraseModal', 'settleModal'];
+  const overlayIds = ['sheetOverlay', 'devModal', 'updateModal', 'eraseModal', 'settleModal', 'openingBalanceModal'];
   return overlayIds.some(id => {
     const el = document.getElementById(id);
     return el && el.classList.contains('show');
@@ -2610,6 +2710,7 @@ function isAnyOverlayOpen(){
 function closeAnyOpenOverlay(){
   if(document.getElementById('sheetOverlay').classList.contains('show')) { closeSheet(); return; }
   if(document.getElementById('settleModal').classList.contains('show')) { closeSettleModal(); return; }
+  if(document.getElementById('openingBalanceModal').classList.contains('show')) { closeOpeningBalanceSetup(); return; }
   if(document.getElementById('devModal').classList.contains('show')) { closeDevModal(); return; }
   if(document.getElementById('updateModal').classList.contains('show')) { closeUpdateModal(); return; }
   if(document.getElementById('eraseModal').classList.contains('show')) { closeEraseModal(); return; }
